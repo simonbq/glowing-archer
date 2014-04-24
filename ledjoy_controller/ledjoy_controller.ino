@@ -77,9 +77,9 @@ void loop()
         digitalWrite(row[i], LOW);
         digitalWrite(column[j], LOW);
       }
-    digitalWrite(row[i], LOW);
     digitalWrite(column[j], LOW);
-    }  
+    }
+    digitalWrite(row[i], LOW);
   }
 }
 
