@@ -1,74 +1,14 @@
-/* Copyright Simon Bergkvist 2014 */
-
-/* 
-//DEFAULT
-int leds[8][8] = {
-{0, 0, 0, 0, 0, 0, 0, 0},
-{0, 0, 0, 0, 0, 0, 0, 0},
-{0, 0, 0, 0, 0, 0, 0, 0},
-{0, 0, 0, 0, 0, 0, 0, 0},
-{0, 0, 0, 0, 0, 0, 0, 0},
-{0, 0, 0, 0, 0, 0, 0, 0},
-{0, 0, 0, 0, 0, 0, 0, 0},
-{0, 0, 0, 0, 0, 0, 0, 0}
-};
-//DOTA LOGO 1
-int leds[8][8] = {
-{1, 1, 1, 1, 1, 1, 1, 1},
-{1, 0, 0, 0, 0, 0, 0, 1},
-{1, 0, 1, 0, 0, 1, 0, 1},
-{1, 0, 0, 1, 0, 0, 0, 1},
-{1, 0, 0, 0, 1, 0, 0, 1},
-{1, 0, 1, 0, 0, 1, 0, 1},
-{1, 0, 0, 0, 0, 0, 0, 1},
-{1, 1, 1, 1, 1, 1, 1, 1}
-};
-//DOTA LOGO 2
-int leds[8][8] = {
-{0, 0, 0, 0, 0, 0, 0, 0},
-{0, 0, 1, 0, 0, 1, 1, 0},
-{0, 1, 1, 1, 0, 0, 1, 0},
-{0, 0, 1, 1, 1, 0, 0, 0},
-{0, 0, 0, 1, 1, 1, 0, 0},
-{0, 1, 0, 0, 1, 1, 1, 0},
-{0, 1, 1, 0, 0, 1, 0, 0},
-{0, 0, 0, 0, 0, 0, 0, 0}
-};
-
-//SMILEY
-int leds[8][8] = {
-{0, 0, 0, 0, 0, 0, 0, 0},
-{0, 0, 1, 0, 0, 1, 0, 0},
-{0, 0, 0, 0, 0, 0, 0, 0},
-{0, 1, 1, 1, 1, 1, 1, 0},
-{0, 1, 0, 0, 0, 0, 1, 0},
-{0, 0, 1, 0, 0, 1, 0, 0},
-{0, 0, 0, 1, 1, 0, 0, 0},
-{0, 0, 0, 0, 0, 0, 0, 0}
-};
-
-
-int leds[8][8] = {
-{0, 0, 0, 0, 0, 0, 0, 0},
-{0, 0, 0, 0, 0, 0, 0, 0},
-{0, 0, 0, 0, 0, 0, 0, 0},
-{0, 0, 0, 0, 1, 0, 0, 0},
-{0, 0, 0, 0, 0, 0, 0, 0},
-{0, 0, 0, 0, 0, 0, 0, 0},
-{0, 0, 1, 1, 1, 0, 0, 0},
-{0, 0, 0, 0, 0, 0, 0, 0}
-};
-*/
-
 int snakex[64];
 int snakey[64];
-int snakelength = 3;
+int snakelength = 1;
 int snakedirection = 1;
 
 int row[8] =     { 14, 15, 16, 17, 2, 3, 4, 5 };
 int column[8] =  { 6, 7, 8, 9, 10, 11, 12, 13 };
 int joystickX = 19;
 int joystickY = 18;
+
+int foodX,foodY;
 
 // Variables will change:
 int ledState = HIGH;             // ledState used to set the LED
@@ -82,32 +22,23 @@ void setup() {
   pinMode(joystickX, INPUT);
   pinMode(joystickY, INPUT);
   
-  snakex[0]=1;
-  snakey[0]=4;
-  snakex[1]=1;
-  snakey[1]=3;
-  snakex[2]=1;
-  snakey[2]=2;
+  placeSnake();
+  placeFood();
 }
 
 void loop()
 {
-  for(int t=0; t<700;t++){
+  for(int t=0; t<300/snakelength;t++){
+    draw(foodX,foodY);
     for(int i=snakelength-1; i>=0; i--){
-      digitalWrite(row[snakey[i]], HIGH);
-      digitalWrite(column[snakex[i]], HIGH);
-      delay(1);
-      digitalWrite(row[snakey[i]], LOW);
-      digitalWrite(column[snakex[i]], LOW);
+      draw(snakex[i],snakey[i]);
     }
     snakedirection = getDirection();
   }
   
   
-  
-  
   for(int i=snakelength-1; i>=0; i--){
-      if(i==0){
+     if(i==0){
       switch(snakedirection){
         case 0:
           snakex[i]+=1;
@@ -121,40 +52,87 @@ void loop()
         case 3:
           snakey[i]-=1;
           break;
+      };
+      if(snakex[i] < 0){snakex[i]=7;}
+      if(snakex[i] > 7){snakex[i]=0;}
+      if(snakey[i] < 0){snakey[i]=7;}
+      if(snakey[i] > 7){snakey[i]=0;}
+      
+      if(checkCollision()==1)
+      {
+          placeSnake();
+          placeFood();          
+      }
+      if(snakex[i]==foodX && snakey[i]==foodY)
+      {
+        snakex[snakelength]=foodX;
+        snakey[snakelength]=foodY;
+        snakelength++;
+        placeFood();
       }
     }else{
       snakex[i] = snakex[i-1];
       snakey[i] = snakey[i-1];
     }
   }
-  /*
-  for(int i=0;i<8;i++){
-    for(int j=0;j<8;j++){
-      if(leds[i][j]>0){
-        digitalWrite(row[i], HIGH);
-        digitalWrite(column[j], HIGH);
-        delay(1);
-      }
-      
-    digitalWrite(column[j], LOW);
-    }
-  digitalWrite(row[i], LOW);
-  }*/
 }
 
 int getDirection(){
-  if(analogRead(joystickX) > 800){
-    return 0;
-  }
-  if(analogRead(joystickX) < 200){
+  if(analogRead(joystickX) > 800 && (snakedirection != 0 || snakelength == 1)){
     return 2;
   }
-  if(analogRead(joystickY) > 800){
-    return 1;
+  if(analogRead(joystickX) < 200 && (snakedirection != 2 || snakelength == 1)){
+    return 0;
   }
-  if(analogRead(joystickY) < 200){
+  if(analogRead(joystickY) > 800 && (snakedirection != 1 || snakelength == 1)){
     return 3;
   }
+  if(analogRead(joystickY) < 200 && (snakedirection != 3 || snakelength == 1)){
+    return 1;
+  }
   return snakedirection;
+}
+
+void draw(int x, int y)
+{
+  digitalWrite(row[y], HIGH);
+  digitalWrite(column[x], HIGH);
+  delay(1);
+  digitalWrite(row[y], LOW);
+  digitalWrite(column[x], LOW);
+}
+
+void placeSnake()
+{
+  snakex[0]=rand()%8;
+  snakey[0]=rand()%8;
+  snakelength=1;
+  snakedirection=rand()%4;
+}
+void placeFood()
+{
+  int onSnake=0;
+  do{
+    onSnake=0;
+    foodX=rand()%8;
+    foodY=rand()%8;
+    for(int i=snakelength-1; i>=0; i--){
+      if(snakex[i]==foodX && snakey[i]==foodY)
+      {
+        onSnake=1;
+      }
+    }
+  }while(onSnake==1);
+}
+
+int checkCollision()
+{
+  for(int i=snakelength-1; i>0; i--){
+    if(snakex[i]==snakex[0] && snakey[i]==snakey[0])
+    {
+      return 1;
+    }
+  }
+  return 0;
 }
 
