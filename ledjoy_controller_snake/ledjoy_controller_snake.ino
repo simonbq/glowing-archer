@@ -106,7 +106,11 @@ void draw(int x, int y)
 {
   digitalWrite(row[y], HIGH);
   digitalWrite(column[x], HIGH);
-  delay(1);
+  if(snakelength > 16){
+    delayMicroseconds(50);
+  }else{
+    delay(1);
+  }
   digitalWrite(row[y], LOW);
   digitalWrite(column[x], LOW);
 }
