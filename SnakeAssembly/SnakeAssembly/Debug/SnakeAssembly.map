@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.1.52  D:\Dokument\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm Fri May 09 16:13:20 2014
+AVRASM ver. 2.1.52  C:\Users\Simon\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm Fri May 30 00:43:44 2014
 
 
 EQU  SIGNATURE_000 0000001e
@@ -694,4 +694,15 @@ EQU  TWIaddr      00000030
 EQU  SPMRaddr     00000032
 EQU  INT_VECTORS_SIZE 00000034
 DEF  rTemp        r16
+DEF  bufferportb  r17
+DEF  bufferportc  r18
+DEF  bufferportd  r19
+DEF  rowNumber    r21
+DEF  matrixData   r24
+DSEG matrix       00000100
 CSEG init         00000034
+CSEG framebuffer  0000007a
+CSEG framebuffer_column_loop 0000005d
+CSEG framebuffer_row_loop 0000006a
+CSEG framebuffer_loop 0000007d
+CSEG gamelogic    0000008d

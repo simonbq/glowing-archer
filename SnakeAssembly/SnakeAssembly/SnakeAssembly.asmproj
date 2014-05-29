@@ -2,7 +2,7 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectVersion>6.1</ProjectVersion>
+    <ProjectVersion>6.2</ProjectVersion>
     <ToolchainName>com.Atmel.AVRAssembler</ToolchainName>
     <ProjectGuid>{16082039-389e-42f4-8828-3e1277247513}</ProjectGuid>
     <avrdeviceseries>none</avrdeviceseries>
@@ -45,9 +45,9 @@
       </AvrAssembler>
     </ToolchainSettings>
     <OutputType>Executable</OutputType>
-    <PostBuildEvent>D:
-cd "D:\Dokument\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\Debug"
-"C:\Program Files (x86)\Arduino\hardware\tools\avr\bin\avrdude" -C "C:\Program Files (x86)\Arduino\hardware\tools\avr\etc\avrdude.conf" -patmega328p -Pcom6 -carduino -b115200 -Uflash:w:SnakeAssembly.hex</PostBuildEvent>
+    <PostBuildEvent>C:
+cd "Users\Simon\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\Debug"
+"C:\Program Files (x86)\Arduino\hardware\tools\avr\bin\avrdude" -C "C:\Program Files (x86)\Arduino\hardware\tools\avr\etc\avrdude.conf" -patmega328p -Pcom11 -carduino -b115200 -Uflash:w:SnakeAssembly.hex</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <ToolchainSettings>

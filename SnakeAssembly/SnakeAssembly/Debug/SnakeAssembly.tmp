@@ -1,17 +1,17 @@
 <ASSEMBLER_INFO>
  <VERSION>2.1.52</VERSION>
  <DEVICE>"ATmega328P"</DEVICE>
- <WORKING_DIR>D:\Dokument\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\Debug</WORKING_DIR>
+ <WORKING_DIR>C:\Users\Simon\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\Debug</WORKING_DIR>
  <INCLUDE_PATH>
-  <DIR>C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include</DIR>
+  <DIR>D:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.1117\avrassembler\Include</DIR>
   <DIR></DIR>
  </INCLUDE_PATH>
- <SOURCE_FILE>D:\Dokument\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</SOURCE_FILE>
+ <SOURCE_FILE>C:\Users\Simon\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</SOURCE_FILE>
  <INCLUDED_FILES>
-  <FILE>C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m328Pdef.inc</FILE>
+  <FILE>D:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.1117\avrassembler\Include\m328Pdef.inc</FILE>
  </INCLUDED_FILES>
  <OBJECT_FILES>
-  <FILE>D:\Dokument\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\Debug/SnakeAssembly.obj</FILE>
+  <FILE>C:\Users\Simon\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\Debug/SnakeAssembly.obj</FILE>
  </OBJECT_FILES>
  <HEX_FILES>
   <FILE>SnakeAssembly.hex</FILE>
@@ -21,6 +21,12 @@
   <FILE>SnakeAssembly.lss</FILE>
  </OUTPUT_FILES>
  <LABELS>
-  <init><FILE>D:\Dokument\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>22</LINE></init>
+  <matrix><FILE>C:\Users\Simon\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>16</LINE></matrix>
+  <init><FILE>C:\Users\Simon\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>27</LINE></init>
+  <framebuffer><FILE>C:\Users\Simon\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>114</LINE></framebuffer>
+  <framebuffer_column_loop><FILE>C:\Users\Simon\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>75</LINE></framebuffer_column_loop>
+  <framebuffer_row_loop><FILE>C:\Users\Simon\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>92</LINE></framebuffer_row_loop>
+  <framebuffer_loop><FILE>C:\Users\Simon\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>121</LINE></framebuffer_loop>
+  <gamelogic><FILE>C:\Users\Simon\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>146</LINE></gamelogic>
  </LABELS>
 </ASSEMBLER_INFO>
