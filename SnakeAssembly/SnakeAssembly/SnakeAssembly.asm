@@ -4,6 +4,8 @@
  *  Created: 2014-04-25 15:33:11
  *   Author: BQ & TF
  */
+ .DEF snakeLength = r22
+ .DEF rTemp2 = r15
  .DEF rTemp = r16
  //setup buffers
  .DEF bufferportb = r17
@@ -11,9 +13,14 @@
  .DEF bufferportd = r19
  .DEF rowNumber = r21
  .DEF matrixData = r24
+ .DEF direction = r20
+ .DEF delay = r23
+ .DEF moreDelay = r25
 
  .DSEG
 matrix: .BYTE 8
+snakeX: .BYTE 16
+snakeY: .BYTE 16
 
 .CSEG // Code segment
 .ORG 0x0000
@@ -25,46 +32,54 @@ matrix: .BYTE 8
  
 .ORG INT_VECTORS_SIZE
 init:
-
+	ldi delay, 0
+	ldi moreDelay, 0
 	//set up stack pointer
 	ldi rTemp, HIGH(RAMEND)
 	out SPH, rTemp
 	ldi rTemp, LOW(RAMEND)
 	out SPL, rTemp
 
+	//init snake
+	ldi snakeLength, 8
+
+	ldi ZH, HIGH(snakeX)
+	ldi ZL, LOW(snakeX)
+	ldi rTemp, 1
+	lsl rTemp
+	lsl rTemp
+	lsl rTemp
+	lsl rTemp
+	st Z, rTemp
+
+	ldi ZH, HIGH(snakeY)
+	ldi ZL, LOW(snakeY)
+	ldi rTemp, 4
+	st Z, rTemp
+
+	//set up i/o
+	//port b
 	ldi rTemp, 0b0011_1111
 	out DDRB, rTemp
+	//port c
 	ldi rTemp, 0b0000_1111
 	out DDRC, rTemp
+	//port d
 	ldi rTemp, 0b1111_1100
 	out DDRD, rTemp
-	
-	ldi YH, HIGH(matrix)
-	ldi YL, LOW(matrix)
-	ldi rTemp, 0
-	st Y, rTemp
-	adiw Y, 1
-	ldi rTemp, 0b00100100
-	st Y, rTemp
-	adiw Y, 1
-	ldi rTemp, 0
-	st Y, rTemp
-	adiw Y, 1
-	ldi rTemp, 0b01111110
-	st Y, rTemp
-	adiw Y, 1
-	ldi rTemp, 0b01000010
-	st Y, rTemp
-	adiw Y, 1
-	ldi rTemp, 0b00100100
-	st Y, rTemp
-	adiw Y, 1
-	ldi rTemp, 0b00011000
-	st Y, rTemp
-	adiw Y, 1
-	ldi rTemp, 0
-	st Y, rTemp
 
+	//initialize A/D converter
+	lds rTemp, ADMUX
+	ori rTemp, 0b01000000
+	sts ADMUX, rTemp
+
+	lds rTemp, ADCSRA
+	ori rTemp, 0b10000111
+	sts ADCSRA, rTemp
+
+	rcall resetMatrix
+	
+	
 	//make sure it's off
 	ldi rTemp, 0
 	out PORTB, rTemp
@@ -133,7 +148,7 @@ framebuffer:
 		out PORTB, bufferportb
 		out PORTC, bufferportc
 		out PORTD, bufferportd
-
+		
 
 		//increase iterator and loop
 		lsl rowNumber
@@ -143,7 +158,244 @@ framebuffer:
 		nop
 
 		jmp framebuffer_loop
-gamelogic:
 
-	//back to framebuffer
-	jmp framebuffer
+gamelogic:
+	subi delay, -1
+	cpi delay, 25
+	brlo draw
+	ldi delay, 0
+
+	subi moreDelay, -1
+	cpi moreDelay, 25
+	brlo draw
+	ldi moreDelay, 0
+
+	ldi rTemp, 0
+	ldi ZH, HIGH(snakeY)
+	ldi ZL, LOW(snakeY)
+	ldi XH, HIGH(snakeX)
+	ldi XL, LOW(snakeX)
+	rcall tailLoop
+
+	rcall getJoyX
+	rcall AD
+	cpi rTemp, 100
+	brlo goRight
+	cpi rTemp, 150
+	brsh goLeft 
+	rcall getJoyY
+	rcall AD
+	cpi rTemp, 150
+	brsh goUp
+	cpi rTemp, 100
+	brlo goDown
+
+	cpi direction, 0
+	breq goRight
+	cpi direction, 2
+	breq goLeft
+	cpi direction, 3
+	breq goUp
+	cpi direction, 1
+	brsh goDown
+	jmp draw
+
+draw:
+	rcall resetMatrix
+	ldi rowNumber, 1
+	sendToFramebuffer:
+		rcall drawPixelsY
+		cp rowNumber, snakeLength
+		breq framebuffer
+		subi rowNumber, -1
+		jmp sendToFramebuffer
+			
+goLeft:
+	ldi direction, 2
+	ldi ZH, HIGH(snakeX)
+	ldi ZL, LOW(snakeX)
+	ld rTemp, Z
+	lsr rTemp
+	cpi rTemp, 0
+	breq resetLeft
+	st Z, rTemp
+	brne draw
+	resetLeft:
+		ldi rTemp, 0b10000000
+		st Z, rTemp
+		jmp draw
+	
+goRight:
+	ldi direction, 0
+	ldi ZH, HIGH(snakeX)
+	ldi ZL, LOW(snakeX)
+	ld rTemp, Z
+	lsl rTemp
+	cpi rTemp, 1
+	brlo resetRight
+	st Z, rTemp
+	brne draw
+	resetRight:
+		ldi rTemp, 0b00000001
+		st Z, rTemp
+		jmp draw
+
+goUp:
+	ldi direction, 3
+	ldi ZH, HIGH(snakeY)
+	ldi ZL, LOW(snakeY)
+	ld rTemp, Z
+	subi rTemp, 1
+	cpi rTemp, -1
+	breq resetUp
+	st Z, rTemp
+	brne draw
+	resetUp:
+		ldi rTemp, 7
+		st Z, rTemp
+		jmp draw
+	st Z, rTemp
+	jmp draw
+
+goDown:
+	ldi direction, 1
+	ldi ZH, HIGH(snakeY)
+	ldi ZL, LOW(snakeY)
+	ld rTemp, Z
+	subi rTemp, -1
+	cpi rTemp, 8
+	brsh resetDown
+	st Z, rTemp
+	brne draw
+	resetDown:
+		ldi rTemp, 0
+		st Z, rTemp
+		jmp draw
+	st Z, rTemp
+	jmp draw
+
+tailLoop:
+		ld rTemp2, Z
+		adiw Z, 1
+		st Z, rTemp2
+
+		ld rTemp2, X
+		adiw X, 1
+		st X, rTemp2
+
+		subi rTemp, -1
+		cp rTemp, snakeLength
+		brne tailLoop
+		ret
+step:
+	adiw Z, 1
+	subi rTemp, -1
+	cp rTemp, rowNumber
+	brne step
+	nop
+	sbiw Z, 1
+	ret
+drawPixelsY:
+	ldi ZH, HIGH(snakeY)
+	ldi ZL, LOW(snakeY)
+	ldi rTemp, 0
+	rcall step
+
+	ldi YH, HIGH(matrix)
+	ldi YL, LOW(matrix)
+	ld rTemp, Z
+	drawPixelsMoveY:
+		cpi rTemp, 0
+		breq drawPixelsX
+		nop
+
+		subi rTemp, 1
+		adiw Y, 1
+		jmp drawPixelsMoveY
+
+drawPixelsX:
+	ldi ZH, HIGH(snakeX)
+	ldi ZL, LOW(snakeX)
+	ldi rTemp, 0
+	rcall step
+
+	ld rTemp2, Y
+	ld rTemp, Z
+	or rTemp, rTemp2
+	st Y, rTemp
+
+	ret
+
+resetMatrix:
+	ldi YH, HIGH(matrix)
+	ldi YL, LOW(matrix)
+	ldi rTemp, 0
+	st Y, rTemp
+	adiw Y, 1
+	ldi rTemp, 0
+	st Y, rTemp
+	adiw Y, 1
+	ldi rTemp, 0
+	st Y, rTemp
+	adiw Y, 1
+	ldi rTemp, 0
+	st Y, rTemp
+	adiw Y, 1
+	ldi rTemp, 0
+	st Y, rTemp
+	adiw Y, 1
+	ldi rTemp, 0
+	st Y, rTemp
+	adiw Y, 1
+	ldi rTemp, 0
+	st Y, rTemp
+	adiw Y, 1
+	ldi rTemp, 0
+	st Y, rTemp
+
+	ret
+
+getJoyX:
+	lds rTemp2, ADMUX
+	lsr rTemp2
+	lsr rTemp2
+	lsr rTemp2
+	lsr rTemp2
+	lsl rTemp2
+	lsl rTemp2
+	lsl rTemp2
+	lsl rTemp2
+	ldi rTemp, 0b0000_0101
+	or rTemp2, rTemp
+	sts ADMUX, rTemp2
+	ret
+getJoyY:
+	lds rTemp2, ADMUX
+	lsr rTemp2
+	lsr rTemp2
+	lsr rTemp2
+	lsr rTemp2
+	lsl rTemp2
+	lsl rTemp2
+	lsl rTemp2
+	lsl rTemp2
+	ldi rTemp, 0b0000_0100
+	or rTemp2, rTemp
+	sts ADMUX, rTemp2
+	ret
+AD:
+	lds rTemp, ADMUX
+	ori rTemp, 0b0010_0000
+	sts ADMUX, rTemp
+
+	lds rTemp, ADCSRA
+	ori rTemp, 0b0100_0000
+	sts ADCSRA, rTemp
+
+	ADLoop:
+		lds rTemp, ADCSRA
+		sbrc rTemp, 6
+		rjmp ADLoop
+	lds rTemp, ADCH
+		//get random functionality from statical BRUS?
+	ret

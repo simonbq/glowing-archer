@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.1.52  C:\Users\Simon\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm Fri May 30 00:43:44 2014
+AVRASM ver. 2.1.52  C:\Users\Simon\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm Thu Aug 28 01:18:39 2014
 
 
 EQU  SIGNATURE_000 0000001e
@@ -693,16 +693,43 @@ EQU  ACIaddr      0000002e
 EQU  TWIaddr      00000030
 EQU  SPMRaddr     00000032
 EQU  INT_VECTORS_SIZE 00000034
+DEF  snakeLength  r22
+DEF  rTemp2       r15
 DEF  rTemp        r16
 DEF  bufferportb  r17
 DEF  bufferportc  r18
 DEF  bufferportd  r19
 DEF  rowNumber    r21
 DEF  matrixData   r24
+DEF  direction    r20
+DEF  delay        r23
+DEF  moreDelay    r25
 DSEG matrix       00000100
+DSEG snakeX       00000108
+DSEG snakeY       00000118
 CSEG init         00000034
-CSEG framebuffer  0000007a
-CSEG framebuffer_column_loop 0000005d
-CSEG framebuffer_row_loop 0000006a
-CSEG framebuffer_loop 0000007d
-CSEG gamelogic    0000008d
+CSEG resetMatrix  0000011c
+CSEG framebuffer  0000007b
+CSEG framebuffer_column_loop 0000005e
+CSEG framebuffer_row_loop 0000006b
+CSEG framebuffer_loop 0000007e
+CSEG gamelogic    0000008e
+CSEG draw         000000b2
+CSEG tailLoop     000000f4
+CSEG getJoyX      00000136
+CSEG AD           00000154
+CSEG goRight      000000c7
+CSEG goLeft       000000ba
+CSEG getJoyY      00000145
+CSEG goUp         000000d4
+CSEG goDown       000000e4
+CSEG sendToFramebuffer 000000b4
+CSEG drawPixelsY  00000105
+CSEG resetLeft    000000c3
+CSEG resetRight   000000d0
+CSEG resetUp      000000dd
+CSEG resetDown    000000ed
+CSEG step         000000fe
+CSEG drawPixelsMoveY 0000010c
+CSEG drawPixelsX  00000113
+CSEG ADLoop       0000015e
