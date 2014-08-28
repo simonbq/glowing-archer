@@ -5,7 +5,7 @@
  *   Author: BQ & TF
  */
  .DEF snakeLength = r22
- .DEF rTemp2 = r15
+ .DEF rTemp2 = r14
  .DEF rTemp = r16
  //setup buffers
  .DEF bufferportb = r17
@@ -17,10 +17,12 @@
  .DEF delay = r23
  .DEF moreDelay = r25
 
+ .EQU SNAKE_MAX_SIZE = 25
+
  .DSEG
 matrix: .BYTE 8
-snakeX: .BYTE 16
-snakeY: .BYTE 16
+snakeX: .BYTE SNAKE_MAX_SIZE + 1
+snakeY: .BYTE SNAKE_MAX_SIZE + 1
 
 .CSEG // Code segment
 .ORG 0x0000
@@ -52,10 +54,29 @@ init:
 	lsl rTemp
 	st Z, rTemp
 
+	ldi rTemp, 1
+	initSnakeX:
+		adiw Z, 1
+		ldi rowNumber, 0
+		st Z, rowNumber
+		cpi rTemp, SNAKE_MAX_SIZE
+		subi rTemp, -1
+		brne initSnakeX
+
 	ldi ZH, HIGH(snakeY)
 	ldi ZL, LOW(snakeY)
+
 	ldi rTemp, 4
 	st Z, rTemp
+
+	ldi rTemp, 1
+	initSnakeY:
+		adiw Z, 1
+		ldi rowNumber, 0
+		st Z, rowNumber
+		cpi rTemp, SNAKE_MAX_SIZE
+		subi rTemp, -1
+		brne initSnakeY
 
 	//set up i/o
 	//port b
@@ -161,20 +182,24 @@ framebuffer:
 
 gamelogic:
 	subi delay, -1
-	cpi delay, 25
+	cpi delay, 100
 	brlo draw
 	ldi delay, 0
 
 	subi moreDelay, -1
-	cpi moreDelay, 25
+	cpi moreDelay, 100
 	brlo draw
 	ldi moreDelay, 0
 
-	ldi rTemp, 0
+	ldi rTemp, 1
+	ldi ZH, HIGH(snakeX)
+	ldi ZL, LOW(snakeX)
+	rcall tailGotoBack
+	rcall tailLoop
+	ldi rTemp, 1
 	ldi ZH, HIGH(snakeY)
 	ldi ZL, LOW(snakeY)
-	ldi XH, HIGH(snakeX)
-	ldi XL, LOW(snakeX)
+	rcall tailGotoBack
 	rcall tailLoop
 
 	rcall getJoyX
@@ -278,15 +303,21 @@ tailLoop:
 		ld rTemp2, Z
 		adiw Z, 1
 		st Z, rTemp2
-
-		ld rTemp2, X
-		adiw X, 1
-		st X, rTemp2
+		sbiw Z, 2
 
 		subi rTemp, -1
 		cp rTemp, snakeLength
-		brne tailLoop
+		brlo tailLoop
 		ret
+
+tailGotoBack:
+		adiw Z, 1
+		subi rTemp, -1
+		cp rTemp, snakeLength
+		brlo tailGotoBack
+		ldi rTemp, 0
+		ret
+
 step:
 	adiw Z, 1
 	subi rTemp, -1

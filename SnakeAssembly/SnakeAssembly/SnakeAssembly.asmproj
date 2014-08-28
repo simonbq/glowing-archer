@@ -46,8 +46,8 @@
     </ToolchainSettings>
     <OutputType>Executable</OutputType>
     <PostBuildEvent>C:
-cd "Users\Simon\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\Debug"
-"C:\Program Files (x86)\Arduino\hardware\tools\avr\bin\avrdude" -C "C:\Program Files (x86)\Arduino\hardware\tools\avr\etc\avrdude.conf" -patmega328p -Pcom11 -carduino -b115200 -Uflash:w:SnakeAssembly.hex</PostBuildEvent>
+cd "Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\Debug"
+"C:\Program Files (x86)\Arduino\hardware\tools\avr\bin\avrdude" -C "C:\Program Files (x86)\Arduino\hardware\tools\avr\etc\avrdude.conf" -patmega328p -Pcom3 -carduino -b115200 -Uflash:w:SnakeAssembly.hex</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <ToolchainSettings>

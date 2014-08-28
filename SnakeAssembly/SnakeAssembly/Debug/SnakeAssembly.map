@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.1.52  C:\Users\Simon\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm Thu Aug 28 01:18:39 2014
+AVRASM ver. 2.1.52  C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm Thu Aug 28 06:37:46 2014
 
 
 EQU  SIGNATURE_000 0000001e
@@ -694,7 +694,7 @@ EQU  TWIaddr      00000030
 EQU  SPMRaddr     00000032
 EQU  INT_VECTORS_SIZE 00000034
 DEF  snakeLength  r22
-DEF  rTemp2       r15
+DEF  rTemp2       r14
 DEF  rTemp        r16
 DEF  bufferportb  r17
 DEF  bufferportc  r18
@@ -704,32 +704,36 @@ DEF  matrixData   r24
 DEF  direction    r20
 DEF  delay        r23
 DEF  moreDelay    r25
+EQU  SNAKE_MAX_SIZE 00000019
 DSEG matrix       00000100
 DSEG snakeX       00000108
-DSEG snakeY       00000118
+DSEG snakeY       00000122
 CSEG init         00000034
-CSEG resetMatrix  0000011c
-CSEG framebuffer  0000007b
-CSEG framebuffer_column_loop 0000005e
-CSEG framebuffer_row_loop 0000006b
-CSEG framebuffer_loop 0000007e
-CSEG gamelogic    0000008e
-CSEG draw         000000b2
-CSEG tailLoop     000000f4
-CSEG getJoyX      00000136
-CSEG AD           00000154
-CSEG goRight      000000c7
-CSEG goLeft       000000ba
-CSEG getJoyY      00000145
-CSEG goUp         000000d4
-CSEG goDown       000000e4
-CSEG sendToFramebuffer 000000b4
-CSEG drawPixelsY  00000105
-CSEG resetLeft    000000c3
-CSEG resetRight   000000d0
-CSEG resetUp      000000dd
-CSEG resetDown    000000ed
-CSEG step         000000fe
-CSEG drawPixelsMoveY 0000010c
-CSEG drawPixelsX  00000113
-CSEG ADLoop       0000015e
+CSEG initSnakeX   00000044
+CSEG initSnakeY   0000004f
+CSEG resetMatrix  00000132
+CSEG framebuffer  00000089
+CSEG framebuffer_column_loop 0000006c
+CSEG framebuffer_row_loop 00000079
+CSEG framebuffer_loop 0000008c
+CSEG gamelogic    0000009c
+CSEG draw         000000c4
+CSEG tailGotoBack 0000010e
+CSEG tailLoop     00000106
+CSEG getJoyX      0000014c
+CSEG AD           0000016a
+CSEG goRight      000000d9
+CSEG goLeft       000000cc
+CSEG getJoyY      0000015b
+CSEG goUp         000000e6
+CSEG goDown       000000f6
+CSEG sendToFramebuffer 000000c6
+CSEG drawPixelsY  0000011b
+CSEG resetLeft    000000d5
+CSEG resetRight   000000e2
+CSEG resetUp      000000ef
+CSEG resetDown    000000ff
+CSEG step         00000114
+CSEG drawPixelsMoveY 00000122
+CSEG drawPixelsX  00000129
+CSEG ADLoop       00000174
