@@ -5,24 +5,30 @@
  *   Author: BQ & TF
  */
  .DEF snakeLength = r22
- .DEF rTemp2 = r14
+ .DEF rTemp2 = r24
  .DEF rTemp = r16
  //setup buffers
  .DEF bufferportb = r17
  .DEF bufferportc = r18
  .DEF bufferportd = r19
  .DEF rowNumber = r21
- .DEF matrixData = r24
  .DEF direction = r20
  .DEF delay = r23
  .DEF moreDelay = r25
+ .DEF random = r14
+ .DEF rTemp3 = r26
+ .Def rTemp4 = r27
 
  .EQU SNAKE_MAX_SIZE = 25
 
  .DSEG
+foodX:	.BYTE 1
+foodY:	.BYTE 1
 matrix: .BYTE 8
 snakeX: .BYTE SNAKE_MAX_SIZE + 1
 snakeY: .BYTE SNAKE_MAX_SIZE + 1
+
+
 
 .CSEG // Code segment
 .ORG 0x0000
@@ -43,7 +49,8 @@ init:
 	out SPL, rTemp
 
 	//init snake
-	ldi snakeLength, 6
+	ldi snakeLength, 1
+	ldi direction, 0
 
 	ldi ZH, HIGH(snakeX)
 	ldi ZL, LOW(snakeX)
@@ -57,7 +64,7 @@ init:
 	ldi rTemp, 1
 	initSnakeX:
 		adiw Z, 1
-		ldi rowNumber, 0
+		ldi rowNumber, -1
 		st Z, rowNumber
 		cpi rTemp, SNAKE_MAX_SIZE
 		subi rTemp, -1
@@ -72,7 +79,7 @@ init:
 	ldi rTemp, 1
 	initSnakeY:
 		adiw Z, 1
-		ldi rowNumber, 0
+		ldi rowNumber, -1
 		st Z, rowNumber
 		cpi rTemp, SNAKE_MAX_SIZE
 		subi rTemp, -1
@@ -98,6 +105,7 @@ init:
 	ori rTemp, 0b10000111
 	sts ADCSRA, rTemp
 
+	rcall spawnFood
 	rcall resetMatrix
 	
 	
@@ -109,7 +117,7 @@ init:
 	jmp framebuffer
 
 framebuffer_column_loop:
-	mov rTemp, matrixData
+	mov rTemp, rTemp2
 	lsl rTemp
 	lsl rTemp
 	lsl rTemp
@@ -118,7 +126,7 @@ framebuffer_column_loop:
 	lsl rTemp
 	or bufferportd, rTemp
 
-	mov rTemp, matrixData
+	mov rTemp, rTemp2
 	lsr rTemp
 	lsr rTemp
 	or bufferportb, rTemp
@@ -147,6 +155,112 @@ framebuffer_row_loop:
 	or bufferportd, rTemp
 
 	ret
+spawnFood:
+	ldi YH, HIGH(foodY)
+	ldi YL, LOW(foodY)
+	rcall getJoyY
+	rcall AD
+
+	st Y, rTemp2
+
+	ldi YH, HIGH(foodX)
+	ldi YL, LOW(foodX)
+
+	rcall getJoyX
+	rcall AD
+	ldi rTemp, 1
+	
+	st Y, rTemp
+
+	cpi rTemp2, 0
+	brne offsetFoodX
+	ret
+
+	offsetFoodX:
+		subi rTemp2, 1
+		lsl rTemp
+		st Y, rTemp
+		cpi rTemp2, 0
+		brne offsetFoodX
+
+	//ld rTemp, Y
+
+	ldi YH, HIGH(foodY)
+	ldi YL, LOW(foodY)
+	ld rTemp2, Y
+
+	ldi ZH, HIGH(snakeY)
+	ldi ZL, LOW(snakeY)
+	ldi rowNumber, 0
+
+	spawnFoodLoopY:
+		ld rTemp, Z
+		cp rTemp, rTemp2
+		breq spawnFoodCheck
+
+		cp rowNumber, snakeLength
+		adiw Z, 1
+		subi rowNumber, -1
+		brne spawnFoodLoopY
+		ret
+
+
+	spawnFoodCheck:
+		ldi YH, HIGH(foodX)
+		ldi YL, LOW(foodX)
+		ld rTemp2, Y
+
+		ldi ZH, HIGH(snakeX)
+		ldi ZL, LOW(snakeX)
+
+		spawnFoodLoopX:
+			cpi rowNumber, 0
+			breq spawnFoodCompareX
+			adiw Z, 1
+			subi rowNumber, 1
+			jmp spawnFoodLoopX
+			
+		spawnFoodCompareX:
+			ld rTemp, Z
+			cp rTemp2, rTemp
+			breq spawnFood
+			ret
+goToInit:
+	jmp init
+checkBody:
+	ldi YH, HIGH(snakeY)
+	ldi YL, LOW(snakeY)
+			
+	ld rTemp, Y
+	ldi rowNumber, 1
+	checkBodyLoopY:
+		adiw Y, 1
+		ld rTemp2, Y
+		cp rTemp, rTemp2
+		breq checkBodyX
+		cp rowNumber, snakeLength
+		subi rowNumber, -1
+		brne checkBodyLoopY
+		ret
+
+	checkBodyX:
+		ldi ZH, HIGH(snakeX)
+		ldi ZL, LOW(snakeX)
+		ld rTemp3, Z
+		mov rTemp4, rowNumber
+		checkBodyLoopX:
+			cpi rTemp4, 1
+			adiw Z, 1
+			breq checkBodyXPos
+			
+			subi rTemp4, 1
+			brne checkBodyLoopX
+			
+		checkBodyXPos:
+			ld rTemp2, Z
+			cp rTemp3, rTemp2
+			breq goToInit
+			jmp checkBodyLoopY
 framebuffer:
 	//see if iterator is done for the frame, go to game logic
 
@@ -159,7 +273,7 @@ framebuffer:
 		ldi bufferportc, 0
 		ldi bufferportd, 0
 
-		ld matrixData, Y
+		ld rTemp2, Y
 
 		rcall framebuffer_row_loop
 		rcall framebuffer_column_loop
@@ -183,16 +297,49 @@ framebuffer:
 draw:
 	rcall resetMatrix
 	ldi rowNumber, 1
+	rcall drawFoodY
 	sendToFramebuffer:
-		rcall drawPixelsY
+		rcall drawSnakeY
 		cp rowNumber, snakeLength
 		breq framebuffer
 		subi rowNumber, -1
 		jmp sendToFramebuffer
 
+checkFood:
+	ldi YH, HIGH(foodY)
+	ldi YL, LOW(foodY)
+	ld rTemp, Y
+	ldi ZH, HIGH(snakeY)
+	ldi ZL, LOW(snakeY)
+	ld rTemp2, Z
+
+	cp rTemp, rTemp2
+	breq checkFoodX
+	nop
+
+	ret
+checkFoodX:
+	ldi YH, HIGH(foodX)
+	ldi YL, LOW(foodX)
+	ld rTemp, Y
+	ldi ZH, HIGH(snakeX)
+	ldi ZL, LOW(snakeX)
+	ld rTemp2, Z
+
+	cp rTemp, rTemp2
+	breq makeLonger
+	nop
+
+	ret
+makeLonger:
+	subi snakeLength, -1
+	rcall spawnFood
+	ret
+
 gamelogic:
 	ldi rTemp, 25
 	sub rTemp, snakeLength
+	lsl rTemp
 	lsl rTemp
 
 	subi delay, -1
@@ -205,6 +352,9 @@ gamelogic:
 	brlo draw
 	ldi moreDelay, 0
 
+	rcall checkFood
+	rcall checkBody
+	
 	ldi rTemp, 1
 	ldi ZH, HIGH(snakeX)
 	ldi ZL, LOW(snakeX)
@@ -315,23 +465,23 @@ goDown:
 	jmp drawShortcut
 
 tailLoop:
-		ld rTemp2, Z
-		adiw Z, 1
-		st Z, rTemp2
-		sbiw Z, 2
+	ld rTemp2, Z
+	adiw Z, 1
+	st Z, rTemp2
+	sbiw Z, 2
 
-		subi rTemp, -1
-		cp rTemp, snakeLength
-		brlo tailLoop
-		ret
+	subi rTemp, -1
+	cp rTemp, snakeLength
+	brlo tailLoop
+	ret
 
 tailGotoBack:
-		adiw Z, 1
-		subi rTemp, -1
-		cp rTemp, snakeLength
-		brlo tailGotoBack
-		ldi rTemp, 0
-		ret
+	adiw Z, 1
+	subi rTemp, -1
+	cp rTemp, snakeLength
+	brlo tailGotoBack
+	ldi rTemp, 0
+	ret
 
 step:
 	adiw Z, 1
@@ -341,7 +491,8 @@ step:
 	nop
 	sbiw Z, 1
 	ret
-drawPixelsY:
+
+drawSnakeY:
 	ldi ZH, HIGH(snakeY)
 	ldi ZL, LOW(snakeY)
 	ldi rTemp, 0
@@ -350,20 +501,49 @@ drawPixelsY:
 	ldi YH, HIGH(matrix)
 	ldi YL, LOW(matrix)
 	ld rTemp, Z
-	drawPixelsMoveY:
+	drawSnakeMoveY:
 		cpi rTemp, 0
-		breq drawPixelsX
+		breq drawSnakeX
 		nop
 
 		subi rTemp, 1
 		adiw Y, 1
-		jmp drawPixelsMoveY
+		jmp drawSnakeMoveY
 
-drawPixelsX:
+drawSnakeX:
 	ldi ZH, HIGH(snakeX)
 	ldi ZL, LOW(snakeX)
 	ldi rTemp, 0
 	rcall step
+
+	ld rTemp2, Y
+	ld rTemp, Z
+	or rTemp, rTemp2
+	st Y, rTemp
+
+	ret
+
+drawFoodY:
+	ldi ZH, HIGH(foodY)
+	ldi ZL, LOW(foodY)
+	ld rTemp, Z
+
+	ldi YH, HIGH(matrix)
+	ldi YL, LOW(matrix)
+
+	drawFoodMoveY:
+		cpi rTemp, 0
+		breq drawFoodX
+		nop
+
+		subi rTemp, 1
+		adiw Y, 1
+		jmp drawFoodMoveY
+	ret
+
+drawFoodX:
+	ldi ZH, HIGH(foodX)
+	ldi ZL, LOW(foodX)
 
 	ld rTemp2, Y
 	ld rTemp, Z
@@ -443,5 +623,26 @@ AD:
 		sbrc rTemp, 6
 		rjmp ADLoop
 	lds rTemp, ADCH
-		//get random functionality from statical BRUS?
+	
+	/*
+	ldi YH, HIGH(random)
+	ldi YL, LOW(random)
+	ld rTemp2, Y
+	add rTemp2, rTemp
+	*/
+	add random, rTemp
+
+	lds rTemp2, ADCH
+	add rTemp2, random
+	lsr rTemp2
+	lsr rTemp2
+	lsr rTemp2
+	lsr rTemp2
+	lsr rTemp2
+
+	
+	//subi rTemp2, -1
+
+	//ldi rTemp2, 0
+
 	ret
