@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.1.52  C:\Users\Simon\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm Fri Aug 29 01:13:27 2014
+AVRASM ver. 2.1.52  C:\Users\Simon\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm Fri Aug 29 01:21:28 2014
 
 [builtin](2): Including file 'D:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.1117\avrassembler\Include\m328Pdef.inc'
 C:\Users\Simon\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm(19): warning: Register r26 already defined by the .DEF directive
@@ -1091,7 +1091,7 @@ C:\Users\Simon\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\Snake
 000064 9300 007a 	sts ADCSRA, rTemp
                  
 000066 d024      	rcall spawnFood
-000067 d14f      	rcall resetMatrix
+000067 d14b      	rcall resetMatrix
                  	
                  	
                  	//make sure it's off
@@ -1099,7 +1099,7 @@ C:\Users\Simon\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\Snake
 000069 b905      	out PORTB, rTemp
 00006a b908      	out PORTC, rTemp
 00006b b90b      	out PORTD, rTemp
-00006c 940c 00d2 	jmp framebuffer
+00006c 940c 00ce 	jmp framebuffer
                  
                  framebuffer_column_loop:
 00006e 2f08      	mov rTemp, rTemp2
@@ -1143,16 +1143,16 @@ C:\Users\Simon\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\Snake
                  spawnFood:
 00008b e0d1      	ldi YH, HIGH(foodY)
 00008c e0c1      	ldi YL, LOW(foodY)
-00008d d152      	rcall getJoyY
-00008e d160      	rcall AD
+00008d d14e      	rcall getJoyY
+00008e d15c      	rcall AD
                  
 00008f 8388      	st Y, rTemp2
                  
 000090 e0d1      	ldi YH, HIGH(foodX)
 000091 e0c0      	ldi YL, LOW(foodX)
                  
-000092 d13e      	rcall getJoyX
-000093 d15b      	rcall AD
+000092 d13a      	rcall getJoyX
+000093 d157      	rcall AD
 000094 e001      	ldi rTemp, 1
                  	
 000095 8308      	st Y, rTemp
@@ -1168,439 +1168,428 @@ C:\Users\Simon\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\Snake
 00009c 3080      		cpi rTemp2, 0
 00009d f7d9      		brne offsetFoodX
                  
-                 	//ld rTemp, Y
-                 
 00009e e0d1      	ldi YH, HIGH(foodY)
 00009f e0c1      	ldi YL, LOW(foodY)
-0000a0 8188      	ld rTemp2, Y
-                 
-0000a1 e0f1      	ldi ZH, HIGH(snakeY)
-0000a2 e2e4      	ldi ZL, LOW(snakeY)
-0000a3 e050      	ldi rowNumber, 0
-                 
-                 	spawnFoodLoopY:
-0000a4 8100      		ld rTemp, Z
-0000a5 1708      		cp rTemp, rTemp2
-0000a6 f029      		breq spawnFoodCheck
-                 
-0000a7 1756      		cp rowNumber, snakeLength
-0000a8 9631      		adiw Z, 1
-0000a9 5f5f      		subi rowNumber, -1
-0000aa f7c9      		brne spawnFoodLoopY
-0000ab 9508      		ret
-                 
-                 
-                 	spawnFoodCheck:
-0000ac e0d1      		ldi YH, HIGH(foodX)
-0000ad e0c0      		ldi YL, LOW(foodX)
-0000ae 8188      		ld rTemp2, Y
-                 
-0000af e0f1      		ldi ZH, HIGH(snakeX)
-0000b0 e0ea      		ldi ZL, LOW(snakeX)
-                 
-                 		spawnFoodLoopX:
-0000b1 3050      			cpi rowNumber, 0
-0000b2 f021      			breq spawnFoodCompareX
-0000b3 9631      			adiw Z, 1
-0000b4 5051      			subi rowNumber, 1
-0000b5 940c 00b1 			jmp spawnFoodLoopX
+0000a0 e0f1      	ldi ZH, HIGH(foodX)
+0000a1 e0e0      	ldi ZL, LOW(foodX)
                  			
-                 		spawnFoodCompareX:
-0000b7 8100      			ld rTemp, Z
-0000b8 1780      			cp rTemp2, rTemp
-0000b9 f289      			breq spawnFood
-0000ba 9508      			ret
+0000a2 8108      	ld rTemp, Y
+0000a3 81a0      	ld rTemp3, Z
+                 
+0000a4 e0d1      	ldi YH, HIGH(snakeY)
+0000a5 e2c4      	ldi YL, LOW(snakeY)
+0000a6 e0f1      	ldi ZH, HIGH(snakeX)
+0000a7 e0ea      	ldi ZL, LOW(snakeX)
+                 
+0000a8 e051      	ldi rowNumber, 1
+                 	checkFoodLoopY:
+0000a9 9621      		adiw Y, 1
+0000aa 9631      		adiw Z, 1
+0000ab 8188      		ld rTemp2, Y
+0000ac 1708      		cp rTemp, rTemp2
+0000ad f021      		breq checkFoodBodyX
+0000ae 1756      		cp rowNumber, snakeLength
+0000af 5f5f      		subi rowNumber, -1
+0000b0 f7c1      		brne checkFoodLoopY
+0000b1 9508      		ret
+                 
+                 	checkFoodBodyX:
+0000b2 8180      		ld rTemp2, Z
+0000b3 17a8      		cp rTemp3, rTemp2
+0000b4 f2b1      		breq spawnFood
+0000b5 940c 00c0 		jmp checkBodyLoopY
+                 
                  goToInit:
-0000bb 940c 0034 	jmp init
+0000b7 940c 0034 	jmp init
                  checkBody:
-0000bd e0d1      	ldi YH, HIGH(snakeY)
-0000be e2c4      	ldi YL, LOW(snakeY)
-0000bf e0f1      	ldi ZH, HIGH(snakeX)
-0000c0 e0ea      	ldi ZL, LOW(snakeX)
+0000b9 e0d1      	ldi YH, HIGH(snakeY)
+0000ba e2c4      	ldi YL, LOW(snakeY)
+0000bb e0f1      	ldi ZH, HIGH(snakeX)
+0000bc e0ea      	ldi ZL, LOW(snakeX)
                  			
-0000c1 8108      	ld rTemp, Y
-0000c2 81a0      	ld rTemp3, Z
+0000bd 8108      	ld rTemp, Y
+0000be 81a0      	ld rTemp3, Z
                  
-0000c3 e051      	ldi rowNumber, 1
+0000bf e051      	ldi rowNumber, 1
                  	checkBodyLoopY:
-0000c4 9621      		adiw Y, 1
-0000c5 9631      		adiw Z, 1
-0000c6 8188      		ld rTemp2, Y
-0000c7 1708      		cp rTemp, rTemp2
-0000c8 f021      		breq checkBodyX
-0000c9 1756      		cp rowNumber, snakeLength
-0000ca 5f5f      		subi rowNumber, -1
-0000cb f7c1      		brne checkBodyLoopY
-0000cc 9508      		ret
+0000c0 9621      		adiw Y, 1
+0000c1 9631      		adiw Z, 1
+0000c2 8188      		ld rTemp2, Y
+0000c3 1708      		cp rTemp, rTemp2
+0000c4 f021      		breq checkBodyX
+0000c5 1756      		cp rowNumber, snakeLength
+0000c6 5f5f      		subi rowNumber, -1
+0000c7 f7c1      		brne checkBodyLoopY
+0000c8 9508      		ret
                  
                  	checkBodyX:
-0000cd 8180      		ld rTemp2, Z
-0000ce 17a8      		cp rTemp3, rTemp2
-0000cf f359      		breq goToInit
-0000d0 940c 00c4 		jmp checkBodyLoopY
+0000c9 8180      		ld rTemp2, Z
+0000ca 17a8      		cp rTemp3, rTemp2
+0000cb f359      		breq goToInit
+0000cc 940c 00c0 		jmp checkBodyLoopY
                  
                  framebuffer:
                  	//see if iterator is done for the frame, go to game logic
                  
-0000d2 e051      	ldi rowNumber, 0b0000_0001
-0000d3 e0d1      	ldi YH, HIGH(matrix)
-0000d4 e0c2      	ldi YL, LOW(matrix)
+0000ce e051      	ldi rowNumber, 0b0000_0001
+0000cf e0d1      	ldi YH, HIGH(matrix)
+0000d0 e0c2      	ldi YL, LOW(matrix)
                  	
                  	framebuffer_loop:
-0000d5 e010      		ldi bufferportb, 0
-0000d6 e020      		ldi bufferportc, 0
-0000d7 e030      		ldi bufferportd, 0
+0000d1 e010      		ldi bufferportb, 0
+0000d2 e020      		ldi bufferportc, 0
+0000d3 e030      		ldi bufferportd, 0
                  
-0000d8 8188      		ld rTemp2, Y
+0000d4 8188      		ld rTemp2, Y
                  
-0000d9 dfa1      		rcall framebuffer_row_loop
-0000da df93      		rcall framebuffer_column_loop
-0000db 9621      		adiw Y, 1
+0000d5 dfa5      		rcall framebuffer_row_loop
+0000d6 df97      		rcall framebuffer_column_loop
+0000d7 9621      		adiw Y, 1
                  
                  		//execute buffers
-0000dc b915      		out PORTB, bufferportb
-0000dd b928      		out PORTC, bufferportc
-0000de b93b      		out PORTD, bufferportd
+0000d8 b915      		out PORTB, bufferportb
+0000d9 b928      		out PORTC, bufferportc
+0000da b93b      		out PORTD, bufferportd
                  		
                  
                  		//increase iterator and loop
-0000df 0f55      		lsl rowNumber
+0000db 0f55      		lsl rowNumber
                  
-0000e0 3050      		cpi rowNumber, 0
-0000e1 f119      		breq gamelogic
-0000e2 0000      		nop
+0000dc 3050      		cpi rowNumber, 0
+0000dd f119      		breq gamelogic
+0000de 0000      		nop
                  
-0000e3 940c 00d5 		jmp framebuffer_loop
+0000df 940c 00d1 		jmp framebuffer_loop
                  
                  draw:
-0000e5 d0d1      	rcall resetMatrix
-0000e6 e051      	ldi rowNumber, 1
-0000e7 d0bb      	rcall drawFoodY
+0000e1 d0d1      	rcall resetMatrix
+0000e2 e051      	ldi rowNumber, 1
+0000e3 d0bb      	rcall drawFoodY
                  	sendToFramebuffer:
-0000e8 d0a3      		rcall drawSnakeY
-0000e9 1756      		cp rowNumber, snakeLength
-0000ea f339      		breq framebuffer
-0000eb 5f5f      		subi rowNumber, -1
-0000ec 940c 00e8 		jmp sendToFramebuffer
+0000e4 d0a3      		rcall drawSnakeY
+0000e5 1756      		cp rowNumber, snakeLength
+0000e6 f339      		breq framebuffer
+0000e7 5f5f      		subi rowNumber, -1
+0000e8 940c 00e4 		jmp sendToFramebuffer
                  
                  checkFood:
-0000ee e0d1      	ldi YH, HIGH(foodY)
-0000ef e0c1      	ldi YL, LOW(foodY)
-0000f0 8108      	ld rTemp, Y
-0000f1 e0f1      	ldi ZH, HIGH(snakeY)
-0000f2 e2e4      	ldi ZL, LOW(snakeY)
-0000f3 8180      	ld rTemp2, Z
+0000ea e0d1      	ldi YH, HIGH(foodY)
+0000eb e0c1      	ldi YL, LOW(foodY)
+0000ec 8108      	ld rTemp, Y
+0000ed e0f1      	ldi ZH, HIGH(snakeY)
+0000ee e2e4      	ldi ZL, LOW(snakeY)
+0000ef 8180      	ld rTemp2, Z
                  
-0000f4 1708      	cp rTemp, rTemp2
-0000f5 f011      	breq checkFoodX
-0000f6 0000      	nop
+0000f0 1708      	cp rTemp, rTemp2
+0000f1 f011      	breq checkFoodX
+0000f2 0000      	nop
                  
-0000f7 9508      	ret
+0000f3 9508      	ret
                  checkFoodX:
-0000f8 e0d1      	ldi YH, HIGH(foodX)
-0000f9 e0c0      	ldi YL, LOW(foodX)
-0000fa 8108      	ld rTemp, Y
-0000fb e0f1      	ldi ZH, HIGH(snakeX)
-0000fc e0ea      	ldi ZL, LOW(snakeX)
-0000fd 8180      	ld rTemp2, Z
+0000f4 e0d1      	ldi YH, HIGH(foodX)
+0000f5 e0c0      	ldi YL, LOW(foodX)
+0000f6 8108      	ld rTemp, Y
+0000f7 e0f1      	ldi ZH, HIGH(snakeX)
+0000f8 e0ea      	ldi ZL, LOW(snakeX)
+0000f9 8180      	ld rTemp2, Z
                  
-0000fe 1708      	cp rTemp, rTemp2
-0000ff f011      	breq makeLonger
-000100 0000      	nop
+0000fa 1708      	cp rTemp, rTemp2
+0000fb f011      	breq makeLonger
+0000fc 0000      	nop
                  
-000101 9508      	ret
+0000fd 9508      	ret
                  makeLonger:
-000102 5f6f      	subi snakeLength, -1
-000103 df87      	rcall spawnFood
-000104 9508      	ret
+0000fe 5f6f      	subi snakeLength, -1
+0000ff df8b      	rcall spawnFood
+000100 9508      	ret
                  
                  gamelogic:
-000105 e109      	ldi rTemp, 25
-000106 1b06      	sub rTemp, snakeLength
-000107 0f00      	lsl rTemp
-000108 0f00      	lsl rTemp
+000101 e109      	ldi rTemp, 25
+000102 1b06      	sub rTemp, snakeLength
+000103 0f00      	lsl rTemp
+000104 0f00      	lsl rTemp
                  
-000109 5f7f      	subi delay, -1
-00010a 1770      	cp delay, rTemp
-00010b f2c8      	brlo draw
-00010c e070      	ldi delay, 0
+000105 5f7f      	subi delay, -1
+000106 1770      	cp delay, rTemp
+000107 f2c8      	brlo draw
+000108 e070      	ldi delay, 0
                  
-00010d 5f9f      	subi moreDelay, -1
-00010e 1790      	cp moreDelay, rTemp
-00010f f2a8      	brlo draw
-000110 e090      	ldi moreDelay, 0
+000109 5f9f      	subi moreDelay, -1
+00010a 1790      	cp moreDelay, rTemp
+00010b f2a8      	brlo draw
+00010c e090      	ldi moreDelay, 0
                  
-000111 dfdc      	rcall checkFood
-000112 dfaa      	rcall checkBody
+00010d dfdc      	rcall checkFood
+00010e dfaa      	rcall checkBody
                  	
-000113 e001      	ldi rTemp, 1
-000114 e0f1      	ldi ZH, HIGH(snakeX)
-000115 e0ea      	ldi ZL, LOW(snakeX)
-000116 d068      	rcall tailGotoBack
-000117 d05f      	rcall tailLoop
-000118 e001      	ldi rTemp, 1
-000119 e0f1      	ldi ZH, HIGH(snakeY)
-00011a e2e4      	ldi ZL, LOW(snakeY)
-00011b d063      	rcall tailGotoBack
-00011c d05a      	rcall tailLoop
+00010f e001      	ldi rTemp, 1
+000110 e0f1      	ldi ZH, HIGH(snakeX)
+000111 e0ea      	ldi ZL, LOW(snakeX)
+000112 d068      	rcall tailGotoBack
+000113 d05f      	rcall tailLoop
+000114 e001      	ldi rTemp, 1
+000115 e0f1      	ldi ZH, HIGH(snakeY)
+000116 e2e4      	ldi ZL, LOW(snakeY)
+000117 d063      	rcall tailGotoBack
+000118 d05a      	rcall tailLoop
                  
-00011d d0b3      	rcall getJoyX
-00011e d0d0      	rcall AD
-00011f 3604      	cpi rTemp, 100
-000120 f118      	brlo goRight
+000119 d0b3      	rcall getJoyX
+00011a d0d0      	rcall AD
+00011b 3604      	cpi rTemp, 100
+00011c f118      	brlo goRight
+00011d 3906      	cpi rTemp, 150
+00011e f490      	brsh goLeft 
+00011f d0bc      	rcall getJoyY
+000120 d0ca      	rcall AD
 000121 3906      	cpi rTemp, 150
-000122 f490      	brsh goLeft 
-000123 d0bc      	rcall getJoyY
-000124 d0ca      	rcall AD
-000125 3906      	cpi rTemp, 150
-000126 f560      	brsh goUp
-000127 3604      	cpi rTemp, 100
-000128 f1e0      	brlo goDown
+000122 f560      	brsh goUp
+000123 3604      	cpi rTemp, 100
+000124 f1e0      	brlo goDown
                  
-000129 3040      	cpi direction, 0
-00012a f0c9      	breq goRight
-00012b 3042      	cpi direction, 2
-00012c f041      	breq goLeft
-00012d 3043      	cpi direction, 3
-00012e f121      	breq goUp
-00012f 3041      	cpi direction, 1
-000130 f5a0      	brsh goDown
-000131 940c 0133 	jmp drawShortcut
+000125 3040      	cpi direction, 0
+000126 f0c9      	breq goRight
+000127 3042      	cpi direction, 2
+000128 f041      	breq goLeft
+000129 3043      	cpi direction, 3
+00012a f121      	breq goUp
+00012b 3041      	cpi direction, 1
+00012c f5a0      	brsh goDown
+00012d 940c 012f 	jmp drawShortcut
                  
                  drawShortcut:
-000133 940c 00e5 	jmp draw
+00012f 940c 00e1 	jmp draw
                  			
                  goLeft:
-000135 3040      	cpi direction, 0
-000136 f069      	breq goRight
-000137 e042      	ldi direction, 2
-000138 e0f1      	ldi ZH, HIGH(snakeX)
-000139 e0ea      	ldi ZL, LOW(snakeX)
-00013a 8100      	ld rTemp, Z
-00013b 9506      	lsr rTemp
-00013c 3000      	cpi rTemp, 0
-00013d f011      	breq resetLeft
-00013e 8300      	st Z, rTemp
-00013f f799      	brne drawShortcut
+000131 3040      	cpi direction, 0
+000132 f069      	breq goRight
+000133 e042      	ldi direction, 2
+000134 e0f1      	ldi ZH, HIGH(snakeX)
+000135 e0ea      	ldi ZL, LOW(snakeX)
+000136 8100      	ld rTemp, Z
+000137 9506      	lsr rTemp
+000138 3000      	cpi rTemp, 0
+000139 f011      	breq resetLeft
+00013a 8300      	st Z, rTemp
+00013b f799      	brne drawShortcut
                  	resetLeft:
-000140 e800      		ldi rTemp, 0b10000000
-000141 8300      		st Z, rTemp
-000142 940c 00e5 		jmp draw
+00013c e800      		ldi rTemp, 0b10000000
+00013d 8300      		st Z, rTemp
+00013e 940c 00e1 		jmp draw
                  	
                  goRight:
-000144 3042      	cpi direction, 2
-000145 f379      	breq goLeft
-000146 e040      	ldi direction, 0
-000147 e0f1      	ldi ZH, HIGH(snakeX)
-000148 e0ea      	ldi ZL, LOW(snakeX)
-000149 8100      	ld rTemp, Z
-00014a 0f00      	lsl rTemp
-00014b 3001      	cpi rTemp, 1
-00014c f010      	brlo resetRight
-00014d 8300      	st Z, rTemp
-00014e f721      	brne drawShortcut
+000140 3042      	cpi direction, 2
+000141 f379      	breq goLeft
+000142 e040      	ldi direction, 0
+000143 e0f1      	ldi ZH, HIGH(snakeX)
+000144 e0ea      	ldi ZL, LOW(snakeX)
+000145 8100      	ld rTemp, Z
+000146 0f00      	lsl rTemp
+000147 3001      	cpi rTemp, 1
+000148 f010      	brlo resetRight
+000149 8300      	st Z, rTemp
+00014a f721      	brne drawShortcut
                  	resetRight:
-00014f e001      		ldi rTemp, 0b00000001
-000150 8300      		st Z, rTemp
-000151 940c 0133 		jmp drawShortcut
+00014b e001      		ldi rTemp, 0b00000001
+00014c 8300      		st Z, rTemp
+00014d 940c 012f 		jmp drawShortcut
                  
                  goUp:
-000153 3041      	cpi direction, 1
-000154 f081      	breq goDown
-000155 e043      	ldi direction, 3
-000156 e0f1      	ldi ZH, HIGH(snakeY)
-000157 e2e4      	ldi ZL, LOW(snakeY)
-000158 8100      	ld rTemp, Z
-000159 5001      	subi rTemp, 1
-00015a 3f0f      	cpi rTemp, -1
-00015b f011      	breq resetUp
-00015c 8300      	st Z, rTemp
-00015d f6a9      	brne drawShortcut
+00014f 3041      	cpi direction, 1
+000150 f081      	breq goDown
+000151 e043      	ldi direction, 3
+000152 e0f1      	ldi ZH, HIGH(snakeY)
+000153 e2e4      	ldi ZL, LOW(snakeY)
+000154 8100      	ld rTemp, Z
+000155 5001      	subi rTemp, 1
+000156 3f0f      	cpi rTemp, -1
+000157 f011      	breq resetUp
+000158 8300      	st Z, rTemp
+000159 f6a9      	brne drawShortcut
                  	resetUp:
-00015e e007      		ldi rTemp, 7
-00015f 8300      		st Z, rTemp
-000160 940c 0133 		jmp drawShortcut
-000162 8300      	st Z, rTemp
-000163 940c 0133 	jmp drawShortcut
+00015a e007      		ldi rTemp, 7
+00015b 8300      		st Z, rTemp
+00015c 940c 012f 		jmp drawShortcut
+00015e 8300      	st Z, rTemp
+00015f 940c 012f 	jmp drawShortcut
                  
                  goDown:
-000165 3043      	cpi direction, 3
-000166 f361      	breq goUp
-000167 e041      	ldi direction, 1
-000168 e0f1      	ldi ZH, HIGH(snakeY)
-000169 e2e4      	ldi ZL, LOW(snakeY)
-00016a 8100      	ld rTemp, Z
-00016b 5f0f      	subi rTemp, -1
-00016c 3008      	cpi rTemp, 8
-00016d f410      	brsh resetDown
-00016e 8300      	st Z, rTemp
-00016f f619      	brne drawShortcut
+000161 3043      	cpi direction, 3
+000162 f361      	breq goUp
+000163 e041      	ldi direction, 1
+000164 e0f1      	ldi ZH, HIGH(snakeY)
+000165 e2e4      	ldi ZL, LOW(snakeY)
+000166 8100      	ld rTemp, Z
+000167 5f0f      	subi rTemp, -1
+000168 3008      	cpi rTemp, 8
+000169 f410      	brsh resetDown
+00016a 8300      	st Z, rTemp
+00016b f619      	brne drawShortcut
                  	resetDown:
-000170 e000      		ldi rTemp, 0
-000171 8300      		st Z, rTemp
-000172 940c 00e5 		jmp draw
-000174 8300      	st Z, rTemp
-000175 940c 0133 	jmp drawShortcut
+00016c e000      		ldi rTemp, 0
+00016d 8300      		st Z, rTemp
+00016e 940c 00e1 		jmp draw
+000170 8300      	st Z, rTemp
+000171 940c 012f 	jmp drawShortcut
                  
                  tailLoop:
-000177 8180      	ld rTemp2, Z
-000178 9631      	adiw Z, 1
-000179 8380      	st Z, rTemp2
-00017a 9732      	sbiw Z, 2
+000173 8180      	ld rTemp2, Z
+000174 9631      	adiw Z, 1
+000175 8380      	st Z, rTemp2
+000176 9732      	sbiw Z, 2
                  
-00017b 5f0f      	subi rTemp, -1
-00017c 1706      	cp rTemp, snakeLength
-00017d f3c8      	brlo tailLoop
-00017e 9508      	ret
+000177 5f0f      	subi rTemp, -1
+000178 1706      	cp rTemp, snakeLength
+000179 f3c8      	brlo tailLoop
+00017a 9508      	ret
                  
                  tailGotoBack:
-00017f 9631      	adiw Z, 1
-000180 5f0f      	subi rTemp, -1
-000181 1706      	cp rTemp, snakeLength
-000182 f3e0      	brlo tailGotoBack
-000183 e000      	ldi rTemp, 0
-000184 9508      	ret
+00017b 9631      	adiw Z, 1
+00017c 5f0f      	subi rTemp, -1
+00017d 1706      	cp rTemp, snakeLength
+00017e f3e0      	brlo tailGotoBack
+00017f e000      	ldi rTemp, 0
+000180 9508      	ret
                  
                  step:
-000185 9631      	adiw Z, 1
-000186 5f0f      	subi rTemp, -1
-000187 1705      	cp rTemp, rowNumber
-000188 f7e1      	brne step
-000189 0000      	nop
-00018a 9731      	sbiw Z, 1
-00018b 9508      	ret
+000181 9631      	adiw Z, 1
+000182 5f0f      	subi rTemp, -1
+000183 1705      	cp rTemp, rowNumber
+000184 f7e1      	brne step
+000185 0000      	nop
+000186 9731      	sbiw Z, 1
+000187 9508      	ret
                  
                  drawSnakeY:
-00018c e0f1      	ldi ZH, HIGH(snakeY)
-00018d e2e4      	ldi ZL, LOW(snakeY)
-00018e e000      	ldi rTemp, 0
-00018f dff5      	rcall step
+000188 e0f1      	ldi ZH, HIGH(snakeY)
+000189 e2e4      	ldi ZL, LOW(snakeY)
+00018a e000      	ldi rTemp, 0
+00018b dff5      	rcall step
                  
-000190 e0d1      	ldi YH, HIGH(matrix)
-000191 e0c2      	ldi YL, LOW(matrix)
-000192 8100      	ld rTemp, Z
+00018c e0d1      	ldi YH, HIGH(matrix)
+00018d e0c2      	ldi YL, LOW(matrix)
+00018e 8100      	ld rTemp, Z
                  	drawSnakeMoveY:
-000193 3000      		cpi rTemp, 0
-000194 f029      		breq drawSnakeX
-000195 0000      		nop
+00018f 3000      		cpi rTemp, 0
+000190 f029      		breq drawSnakeX
+000191 0000      		nop
                  
-000196 5001      		subi rTemp, 1
-000197 9621      		adiw Y, 1
-000198 940c 0193 		jmp drawSnakeMoveY
+000192 5001      		subi rTemp, 1
+000193 9621      		adiw Y, 1
+000194 940c 018f 		jmp drawSnakeMoveY
                  
                  drawSnakeX:
-00019a e0f1      	ldi ZH, HIGH(snakeX)
-00019b e0ea      	ldi ZL, LOW(snakeX)
-00019c e000      	ldi rTemp, 0
-00019d dfe7      	rcall step
+000196 e0f1      	ldi ZH, HIGH(snakeX)
+000197 e0ea      	ldi ZL, LOW(snakeX)
+000198 e000      	ldi rTemp, 0
+000199 dfe7      	rcall step
                  
-00019e 8188      	ld rTemp2, Y
-00019f 8100      	ld rTemp, Z
-0001a0 2b08      	or rTemp, rTemp2
-0001a1 8308      	st Y, rTemp
+00019a 8188      	ld rTemp2, Y
+00019b 8100      	ld rTemp, Z
+00019c 2b08      	or rTemp, rTemp2
+00019d 8308      	st Y, rTemp
                  
-0001a2 9508      	ret
+00019e 9508      	ret
                  
                  drawFoodY:
-0001a3 e0f1      	ldi ZH, HIGH(foodY)
-0001a4 e0e1      	ldi ZL, LOW(foodY)
-0001a5 8100      	ld rTemp, Z
+00019f e0f1      	ldi ZH, HIGH(foodY)
+0001a0 e0e1      	ldi ZL, LOW(foodY)
+0001a1 8100      	ld rTemp, Z
                  
-0001a6 e0d1      	ldi YH, HIGH(matrix)
-0001a7 e0c2      	ldi YL, LOW(matrix)
+0001a2 e0d1      	ldi YH, HIGH(matrix)
+0001a3 e0c2      	ldi YL, LOW(matrix)
                  
                  	drawFoodMoveY:
-0001a8 3000      		cpi rTemp, 0
-0001a9 f031      		breq drawFoodX
-0001aa 0000      		nop
+0001a4 3000      		cpi rTemp, 0
+0001a5 f031      		breq drawFoodX
+0001a6 0000      		nop
                  
-0001ab 5001      		subi rTemp, 1
-0001ac 9621      		adiw Y, 1
-0001ad 940c 01a8 		jmp drawFoodMoveY
-0001af 9508      	ret
+0001a7 5001      		subi rTemp, 1
+0001a8 9621      		adiw Y, 1
+0001a9 940c 01a4 		jmp drawFoodMoveY
+0001ab 9508      	ret
                  
                  drawFoodX:
-0001b0 e0f1      	ldi ZH, HIGH(foodX)
-0001b1 e0e0      	ldi ZL, LOW(foodX)
+0001ac e0f1      	ldi ZH, HIGH(foodX)
+0001ad e0e0      	ldi ZL, LOW(foodX)
                  
-0001b2 8188      	ld rTemp2, Y
-0001b3 8100      	ld rTemp, Z
-0001b4 2b08      	or rTemp, rTemp2
-0001b5 8308      	st Y, rTemp
+0001ae 8188      	ld rTemp2, Y
+0001af 8100      	ld rTemp, Z
+0001b0 2b08      	or rTemp, rTemp2
+0001b1 8308      	st Y, rTemp
                  
-0001b6 9508      	ret
+0001b2 9508      	ret
                  
                  resetMatrix:
-0001b7 e0d1      	ldi YH, HIGH(matrix)
-0001b8 e0c2      	ldi YL, LOW(matrix)
-0001b9 e000      	ldi rTemp, 0
-0001ba 8308      	st Y, rTemp
-0001bb 9621      	adiw Y, 1
-0001bc e000      	ldi rTemp, 0
-0001bd 8308      	st Y, rTemp
-0001be 9621      	adiw Y, 1
-0001bf e000      	ldi rTemp, 0
-0001c0 8308      	st Y, rTemp
-0001c1 9621      	adiw Y, 1
-0001c2 e000      	ldi rTemp, 0
-0001c3 8308      	st Y, rTemp
-0001c4 9621      	adiw Y, 1
-0001c5 e000      	ldi rTemp, 0
-0001c6 8308      	st Y, rTemp
-0001c7 9621      	adiw Y, 1
-0001c8 e000      	ldi rTemp, 0
-0001c9 8308      	st Y, rTemp
-0001ca 9621      	adiw Y, 1
-0001cb e000      	ldi rTemp, 0
-0001cc 8308      	st Y, rTemp
-0001cd 9621      	adiw Y, 1
-0001ce e000      	ldi rTemp, 0
-0001cf 8308      	st Y, rTemp
+0001b3 e0d1      	ldi YH, HIGH(matrix)
+0001b4 e0c2      	ldi YL, LOW(matrix)
+0001b5 e000      	ldi rTemp, 0
+0001b6 8308      	st Y, rTemp
+0001b7 9621      	adiw Y, 1
+0001b8 e000      	ldi rTemp, 0
+0001b9 8308      	st Y, rTemp
+0001ba 9621      	adiw Y, 1
+0001bb e000      	ldi rTemp, 0
+0001bc 8308      	st Y, rTemp
+0001bd 9621      	adiw Y, 1
+0001be e000      	ldi rTemp, 0
+0001bf 8308      	st Y, rTemp
+0001c0 9621      	adiw Y, 1
+0001c1 e000      	ldi rTemp, 0
+0001c2 8308      	st Y, rTemp
+0001c3 9621      	adiw Y, 1
+0001c4 e000      	ldi rTemp, 0
+0001c5 8308      	st Y, rTemp
+0001c6 9621      	adiw Y, 1
+0001c7 e000      	ldi rTemp, 0
+0001c8 8308      	st Y, rTemp
+0001c9 9621      	adiw Y, 1
+0001ca e000      	ldi rTemp, 0
+0001cb 8308      	st Y, rTemp
                  
-0001d0 9508      	ret
+0001cc 9508      	ret
                  
                  getJoyX:
-0001d1 9180 007c 	lds rTemp2, ADMUX
-0001d3 9586      	lsr rTemp2
-0001d4 9586      	lsr rTemp2
-0001d5 9586      	lsr rTemp2
-0001d6 9586      	lsr rTemp2
-0001d7 0f88      	lsl rTemp2
-0001d8 0f88      	lsl rTemp2
-0001d9 0f88      	lsl rTemp2
-0001da 0f88      	lsl rTemp2
-0001db e005      	ldi rTemp, 0b0000_0101
-0001dc 2b80      	or rTemp2, rTemp
-0001dd 9380 007c 	sts ADMUX, rTemp2
-0001df 9508      	ret
+0001cd 9180 007c 	lds rTemp2, ADMUX
+0001cf 9586      	lsr rTemp2
+0001d0 9586      	lsr rTemp2
+0001d1 9586      	lsr rTemp2
+0001d2 9586      	lsr rTemp2
+0001d3 0f88      	lsl rTemp2
+0001d4 0f88      	lsl rTemp2
+0001d5 0f88      	lsl rTemp2
+0001d6 0f88      	lsl rTemp2
+0001d7 e005      	ldi rTemp, 0b0000_0101
+0001d8 2b80      	or rTemp2, rTemp
+0001d9 9380 007c 	sts ADMUX, rTemp2
+0001db 9508      	ret
                  getJoyY:
-0001e0 9180 007c 	lds rTemp2, ADMUX
-0001e2 9586      	lsr rTemp2
-0001e3 9586      	lsr rTemp2
-0001e4 9586      	lsr rTemp2
-0001e5 9586      	lsr rTemp2
-0001e6 0f88      	lsl rTemp2
-0001e7 0f88      	lsl rTemp2
-0001e8 0f88      	lsl rTemp2
-0001e9 0f88      	lsl rTemp2
-0001ea e004      	ldi rTemp, 0b0000_0100
-0001eb 2b80      	or rTemp2, rTemp
-0001ec 9380 007c 	sts ADMUX, rTemp2
-0001ee 9508      	ret
+0001dc 9180 007c 	lds rTemp2, ADMUX
+0001de 9586      	lsr rTemp2
+0001df 9586      	lsr rTemp2
+0001e0 9586      	lsr rTemp2
+0001e1 9586      	lsr rTemp2
+0001e2 0f88      	lsl rTemp2
+0001e3 0f88      	lsl rTemp2
+0001e4 0f88      	lsl rTemp2
+0001e5 0f88      	lsl rTemp2
+0001e6 e004      	ldi rTemp, 0b0000_0100
+0001e7 2b80      	or rTemp2, rTemp
+0001e8 9380 007c 	sts ADMUX, rTemp2
+0001ea 9508      	ret
                  AD:
-0001ef 9100 007c 	lds rTemp, ADMUX
-0001f1 6200      	ori rTemp, 0b0010_0000
-0001f2 9300 007c 	sts ADMUX, rTemp
+0001eb 9100 007c 	lds rTemp, ADMUX
+0001ed 6200      	ori rTemp, 0b0010_0000
+0001ee 9300 007c 	sts ADMUX, rTemp
                  
-0001f4 9100 007a 	lds rTemp, ADCSRA
-0001f6 6400      	ori rTemp, 0b0100_0000
-0001f7 9300 007a 	sts ADCSRA, rTemp
+0001f0 9100 007a 	lds rTemp, ADCSRA
+0001f2 6400      	ori rTemp, 0b0100_0000
+0001f3 9300 007a 	sts ADCSRA, rTemp
                  
                  	ADLoop:
-0001f9 9100 007a 		lds rTemp, ADCSRA
-0001fb fd06      		sbrc rTemp, 6
-0001fc cffc      		rjmp ADLoop
-0001fd 9100 0079 	lds rTemp, ADCH
+0001f5 9100 007a 		lds rTemp, ADCSRA
+0001f7 fd06      		sbrc rTemp, 6
+0001f8 cffc      		rjmp ADLoop
+0001f9 9100 0079 	lds rTemp, ADCH
                  	
                  	/*
                  	ldi YH, HIGH(random)
@@ -1608,15 +1597,15 @@ C:\Users\Simon\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\Snake
                  	ld rTemp2, Y
                  	add rTemp2, rTemp
                  	*/
-0001ff 0ee0      	add random, rTemp
+0001fb 0ee0      	add random, rTemp
                  
-000200 9180 0079 	lds rTemp2, ADCH
-000202 0d8e      	add rTemp2, random
+0001fc 9180 0079 	lds rTemp2, ADCH
+0001fe 0d8e      	add rTemp2, random
+0001ff 9586      	lsr rTemp2
+000200 9586      	lsr rTemp2
+000201 9586      	lsr rTemp2
+000202 9586      	lsr rTemp2
 000203 9586      	lsr rTemp2
-000204 9586      	lsr rTemp2
-000205 9586      	lsr rTemp2
-000206 9586      	lsr rTemp2
-000207 9586      	lsr rTemp2
                  
                  	
                  	//subi rTemp2, -1
@@ -1642,37 +1631,37 @@ counted separately from r26..r31 here.
 "ATmega328P" register use summary:
 r0 :   0 r1 :   0 r2 :   0 r3 :   0 r4 :   0 r5 :   0 r6 :   0 r7 :   0 
 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 r13:   0 r14:   2 r15:   0 
-r16: 164 r17:   3 r18:   3 r19:   4 r20:  13 r21:  21 r22:   8 r23:   4 
-r24:  54 r25:   4 r26:   2 r27:   0 r28:  11 r29:  11 r30:  17 r31:  17 
-x  :   0 y  :  33 z  :  40 
+r16: 162 r17:   3 r18:   3 r19:   4 r20:  13 r21:  19 r22:   8 r23:   4 
+r24:  54 r25:   4 r26:   4 r27:   0 r28:  11 r29:  11 r30:  17 r31:  17 
+x  :   0 y  :  34 z  :  39 
 Registers used: 18 out of 35 (51.4%)
 
 "ATmega328P" instruction use summary:
 .lds  :   0 .sts  :   0 adc   :   0 add   :   2 adiw  :  19 and   :   0 
 andi  :   1 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
-brcc  :   0 brcs  :   0 break :   0 breq  :  20 brge  :   0 brhc  :   0 
+brcc  :   0 brcs  :   0 break :   0 breq  :  19 brge  :   0 brhc  :   0 
 brhs  :   0 brid  :   0 brie  :   0 brlo  :   7 brlt  :   0 brmi  :   0 
 brne  :  11 brpl  :   0 brsh  :   4 brtc  :   0 brts  :   0 brvc  :   0 
 brvs  :   0 bset  :   0 bst   :   0 call  :   0 cbi   :   0 cbr   :   0 
 clc   :   0 clh   :   0 cli   :   0 cln   :   0 clr   :   0 cls   :   0 
 clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :  14 cpc   :   0 
-cpi   :  24 cpse  :   0 dec   :   0 eor   :   0 fmul  :   0 fmuls :   0 
+cpi   :  23 cpse  :   0 dec   :   0 eor   :   0 fmul  :   0 fmuls :   0 
 fmulsu:   0 icall :   0 ijmp  :   0 in    :   0 inc   :   0 jmp   :  17 
 ld    :  24 ldd   :   0 ldi   : 108 lds   :   9 lpm   :   0 lsl   :  25 
 lsr   :  20 mov   :   4 movw  :   0 mul   :   0 muls  :   0 mulsu :   0 
 neg   :   0 nop   :   8 or    :   8 ori   :   4 out   :  13 pop   :   0 
-push  :   0 rcall :  24 ret   :  19 reti  :   0 rjmp  :   1 rol   :   0 
+push  :   0 rcall :  24 ret   :  18 reti  :   0 rjmp  :   1 rol   :   0 
 ror   :   0 sbc   :   0 sbci  :   0 sbi   :   0 sbic  :   0 sbis  :   0 
 sbiw  :   2 sbr   :   0 sbrc  :   1 sbrs  :   0 sec   :   0 seh   :   0 
 sei   :   0 sen   :   0 ser   :   0 ses   :   0 set   :   0 sev   :   0 
 sez   :   0 sleep :   0 spm   :   0 st    :  28 std   :   0 sts   :   6 
-sub   :   1 subi  :  17 swap  :   0 tst   :   0 wdr   :   0 
+sub   :   1 subi  :  16 swap  :   0 tst   :   0 wdr   :   0 
 Instructions used: 29 out of 113 (25.7%)
 
 "ATmega328P" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x000412    946      0    946   32768   2.9%
+[.cseg] 0x000000 0x00040a    938      0    938   32768   2.9%
 [.dseg] 0x000100 0x00013e      0     62     62    2048   3.0%
 [.eseg] 0x000000 0x000000      0      0      0    1024   0.0%
 

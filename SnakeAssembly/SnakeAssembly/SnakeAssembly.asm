@@ -183,48 +183,37 @@ spawnFood:
 		cpi rTemp2, 0
 		brne offsetFoodX
 
-	//ld rTemp, Y
-
 	ldi YH, HIGH(foodY)
 	ldi YL, LOW(foodY)
-	ld rTemp2, Y
+	ldi ZH, HIGH(foodX)
+	ldi ZL, LOW(foodX)
+			
+	ld rTemp, Y
+	ld rTemp3, Z
 
-	ldi ZH, HIGH(snakeY)
-	ldi ZL, LOW(snakeY)
-	ldi rowNumber, 0
+	ldi YH, HIGH(snakeY)
+	ldi YL, LOW(snakeY)
+	ldi ZH, HIGH(snakeX)
+	ldi ZL, LOW(snakeX)
 
-	spawnFoodLoopY:
-		ld rTemp, Z
-		cp rTemp, rTemp2
-		breq spawnFoodCheck
-
-		cp rowNumber, snakeLength
+	ldi rowNumber, 1
+	checkFoodLoopY:
+		adiw Y, 1
 		adiw Z, 1
+		ld rTemp2, Y
+		cp rTemp, rTemp2
+		breq checkFoodBodyX
+		cp rowNumber, snakeLength
 		subi rowNumber, -1
-		brne spawnFoodLoopY
+		brne checkFoodLoopY
 		ret
 
+	checkFoodBodyX:
+		ld rTemp2, Z
+		cp rTemp3, rTemp2
+		breq spawnFood
+		jmp checkBodyLoopY
 
-	spawnFoodCheck:
-		ldi YH, HIGH(foodX)
-		ldi YL, LOW(foodX)
-		ld rTemp2, Y
-
-		ldi ZH, HIGH(snakeX)
-		ldi ZL, LOW(snakeX)
-
-		spawnFoodLoopX:
-			cpi rowNumber, 0
-			breq spawnFoodCompareX
-			adiw Z, 1
-			subi rowNumber, 1
-			jmp spawnFoodLoopX
-			
-		spawnFoodCompareX:
-			ld rTemp, Z
-			cp rTemp2, rTemp
-			breq spawnFood
-			ret
 goToInit:
 	jmp init
 checkBody:
