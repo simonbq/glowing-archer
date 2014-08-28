@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.1.52  C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm Thu Aug 28 06:37:46 2014
+AVRASM ver. 2.1.52  C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm Thu Aug 28 07:00:52 2014
 
 
 EQU  SIGNATURE_000 0000001e
@@ -711,29 +711,30 @@ DSEG snakeY       00000122
 CSEG init         00000034
 CSEG initSnakeX   00000044
 CSEG initSnakeY   0000004f
-CSEG resetMatrix  00000132
+CSEG resetMatrix  0000013f
 CSEG framebuffer  00000089
 CSEG framebuffer_column_loop 0000006c
 CSEG framebuffer_row_loop 00000079
 CSEG framebuffer_loop 0000008c
-CSEG gamelogic    0000009c
-CSEG draw         000000c4
-CSEG tailGotoBack 0000010e
-CSEG tailLoop     00000106
-CSEG getJoyX      0000014c
-CSEG AD           0000016a
-CSEG goRight      000000d9
-CSEG goLeft       000000cc
-CSEG getJoyY      0000015b
-CSEG goUp         000000e6
-CSEG goDown       000000f6
-CSEG sendToFramebuffer 000000c6
-CSEG drawPixelsY  0000011b
-CSEG resetLeft    000000d5
-CSEG resetRight   000000e2
-CSEG resetUp      000000ef
-CSEG resetDown    000000ff
-CSEG step         00000114
-CSEG drawPixelsMoveY 00000122
-CSEG drawPixelsX  00000129
-CSEG ADLoop       00000174
+CSEG gamelogic    000000a4
+CSEG draw         0000009c
+CSEG sendToFramebuffer 0000009e
+CSEG drawPixelsY  00000128
+CSEG tailGotoBack 0000011b
+CSEG tailLoop     00000113
+CSEG getJoyX      00000159
+CSEG AD           00000177
+CSEG goRight      000000e0
+CSEG goLeft       000000d1
+CSEG getJoyY      00000168
+CSEG goUp         000000ef
+CSEG goDown       00000101
+CSEG drawShortcut 000000cf
+CSEG resetLeft    000000dc
+CSEG resetRight   000000eb
+CSEG resetUp      000000fa
+CSEG resetDown    0000010c
+CSEG step         00000121
+CSEG drawPixelsMoveY 0000012f
+CSEG drawPixelsX  00000136
+CSEG ADLoop       00000181

@@ -43,7 +43,7 @@ init:
 	out SPL, rTemp
 
 	//init snake
-	ldi snakeLength, 8
+	ldi snakeLength, 6
 
 	ldi ZH, HIGH(snakeX)
 	ldi ZL, LOW(snakeX)
@@ -180,14 +180,28 @@ framebuffer:
 
 		jmp framebuffer_loop
 
+draw:
+	rcall resetMatrix
+	ldi rowNumber, 1
+	sendToFramebuffer:
+		rcall drawPixelsY
+		cp rowNumber, snakeLength
+		breq framebuffer
+		subi rowNumber, -1
+		jmp sendToFramebuffer
+
 gamelogic:
+	ldi rTemp, 25
+	sub rTemp, snakeLength
+	lsl rTemp
+
 	subi delay, -1
-	cpi delay, 100
+	cp delay, rTemp
 	brlo draw
 	ldi delay, 0
 
 	subi moreDelay, -1
-	cpi moreDelay, 100
+	cp moreDelay, rTemp
 	brlo draw
 	ldi moreDelay, 0
 
@@ -223,19 +237,14 @@ gamelogic:
 	breq goUp
 	cpi direction, 1
 	brsh goDown
-	jmp draw
+	jmp drawShortcut
 
-draw:
-	rcall resetMatrix
-	ldi rowNumber, 1
-	sendToFramebuffer:
-		rcall drawPixelsY
-		cp rowNumber, snakeLength
-		breq framebuffer
-		subi rowNumber, -1
-		jmp sendToFramebuffer
+drawShortcut:
+	jmp draw
 			
 goLeft:
+	cpi direction, 0
+	breq goRight
 	ldi direction, 2
 	ldi ZH, HIGH(snakeX)
 	ldi ZL, LOW(snakeX)
@@ -244,13 +253,15 @@ goLeft:
 	cpi rTemp, 0
 	breq resetLeft
 	st Z, rTemp
-	brne draw
+	brne drawShortcut
 	resetLeft:
 		ldi rTemp, 0b10000000
 		st Z, rTemp
 		jmp draw
 	
 goRight:
+	cpi direction, 2
+	breq goLeft
 	ldi direction, 0
 	ldi ZH, HIGH(snakeX)
 	ldi ZL, LOW(snakeX)
@@ -259,13 +270,15 @@ goRight:
 	cpi rTemp, 1
 	brlo resetRight
 	st Z, rTemp
-	brne draw
+	brne drawShortcut
 	resetRight:
 		ldi rTemp, 0b00000001
 		st Z, rTemp
-		jmp draw
+		jmp drawShortcut
 
 goUp:
+	cpi direction, 1
+	breq goDown
 	ldi direction, 3
 	ldi ZH, HIGH(snakeY)
 	ldi ZL, LOW(snakeY)
@@ -274,15 +287,17 @@ goUp:
 	cpi rTemp, -1
 	breq resetUp
 	st Z, rTemp
-	brne draw
+	brne drawShortcut
 	resetUp:
 		ldi rTemp, 7
 		st Z, rTemp
-		jmp draw
+		jmp drawShortcut
 	st Z, rTemp
-	jmp draw
+	jmp drawShortcut
 
 goDown:
+	cpi direction, 3
+	breq goUp
 	ldi direction, 1
 	ldi ZH, HIGH(snakeY)
 	ldi ZL, LOW(snakeY)
@@ -291,13 +306,13 @@ goDown:
 	cpi rTemp, 8
 	brsh resetDown
 	st Z, rTemp
-	brne draw
+	brne drawShortcut
 	resetDown:
 		ldi rTemp, 0
 		st Z, rTemp
 		jmp draw
 	st Z, rTemp
-	jmp draw
+	jmp drawShortcut
 
 tailLoop:
 		ld rTemp2, Z

@@ -27,31 +27,32 @@
   <init><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>36</LINE></init>
   <initSnakeX><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>58</LINE></initSnakeX>
   <initSnakeY><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>73</LINE></initSnakeY>
-  <resetMatrix><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>360</LINE></resetMatrix>
+  <resetMatrix><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>375</LINE></resetMatrix>
   <framebuffer><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>150</LINE></framebuffer>
   <framebuffer_column_loop><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>111</LINE></framebuffer_column_loop>
   <framebuffer_row_loop><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>128</LINE></framebuffer_row_loop>
   <framebuffer_loop><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>157</LINE></framebuffer_loop>
-  <gamelogic><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>183</LINE></gamelogic>
-  <draw><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>228</LINE></draw>
-  <tailGotoBack><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>313</LINE></tailGotoBack>
-  <tailLoop><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>302</LINE></tailLoop>
-  <getJoyX><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>389</LINE></getJoyX>
-  <AD><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>417</LINE></AD>
-  <goRight><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>253</LINE></goRight>
-  <goLeft><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>238</LINE></goLeft>
-  <getJoyY><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>403</LINE></getJoyY>
-  <goUp><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>268</LINE></goUp>
-  <goDown><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>285</LINE></goDown>
-  <sendToFramebuffer><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>231</LINE></sendToFramebuffer>
-  <drawPixelsY><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>329</LINE></drawPixelsY>
-  <resetLeft><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>248</LINE></resetLeft>
-  <resetRight><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>263</LINE></resetRight>
-  <resetUp><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>278</LINE></resetUp>
-  <resetDown><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>295</LINE></resetDown>
-  <step><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>321</LINE></step>
-  <drawPixelsMoveY><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>338</LINE></drawPixelsMoveY>
-  <drawPixelsX><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>347</LINE></drawPixelsX>
-  <ADLoop><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>426</LINE></ADLoop>
+  <gamelogic><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>193</LINE></gamelogic>
+  <draw><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>183</LINE></draw>
+  <sendToFramebuffer><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>186</LINE></sendToFramebuffer>
+  <drawPixelsY><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>344</LINE></drawPixelsY>
+  <tailGotoBack><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>328</LINE></tailGotoBack>
+  <tailLoop><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>317</LINE></tailLoop>
+  <getJoyX><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>404</LINE></getJoyX>
+  <AD><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>432</LINE></AD>
+  <goRight><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>262</LINE></goRight>
+  <goLeft><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>245</LINE></goLeft>
+  <getJoyY><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>418</LINE></getJoyY>
+  <goUp><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>279</LINE></goUp>
+  <goDown><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>298</LINE></goDown>
+  <drawShortcut><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>242</LINE></drawShortcut>
+  <resetLeft><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>257</LINE></resetLeft>
+  <resetRight><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>274</LINE></resetRight>
+  <resetUp><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>291</LINE></resetUp>
+  <resetDown><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>310</LINE></resetDown>
+  <step><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>336</LINE></step>
+  <drawPixelsMoveY><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>353</LINE></drawPixelsMoveY>
+  <drawPixelsX><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>362</LINE></drawPixelsX>
+  <ADLoop><FILE>C:\Users\Erik\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm</FILE><LINE>441</LINE></ADLoop>
  </LABELS>
 </ASSEMBLER_INFO>
