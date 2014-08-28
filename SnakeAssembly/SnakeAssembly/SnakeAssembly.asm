@@ -230,11 +230,16 @@ goToInit:
 checkBody:
 	ldi YH, HIGH(snakeY)
 	ldi YL, LOW(snakeY)
+	ldi ZH, HIGH(snakeX)
+	ldi ZL, LOW(snakeX)
 			
 	ld rTemp, Y
+	ld rTemp3, Z
+
 	ldi rowNumber, 1
 	checkBodyLoopY:
 		adiw Y, 1
+		adiw Z, 1
 		ld rTemp2, Y
 		cp rTemp, rTemp2
 		breq checkBodyX
@@ -244,23 +249,11 @@ checkBody:
 		ret
 
 	checkBodyX:
-		ldi ZH, HIGH(snakeX)
-		ldi ZL, LOW(snakeX)
-		ld rTemp3, Z
-		mov rTemp4, rowNumber
-		checkBodyLoopX:
-			cpi rTemp4, 1
-			adiw Z, 1
-			breq checkBodyXPos
-			
-			subi rTemp4, 1
-			brne checkBodyLoopX
-			
-		checkBodyXPos:
-			ld rTemp2, Z
-			cp rTemp3, rTemp2
-			breq goToInit
-			jmp checkBodyLoopY
+		ld rTemp2, Z
+		cp rTemp3, rTemp2
+		breq goToInit
+		jmp checkBodyLoopY
+
 framebuffer:
 	//see if iterator is done for the frame, go to game logic
 

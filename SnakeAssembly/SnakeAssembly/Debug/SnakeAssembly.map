@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.1.52  C:\Users\Simon\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm Fri Aug 29 01:08:12 2014
+AVRASM ver. 2.1.52  C:\Users\Simon\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm Fri Aug 29 01:13:27 2014
 
 
 EQU  SIGNATURE_000 0000001e
@@ -716,13 +716,13 @@ CSEG init         00000034
 CSEG initSnakeX   00000045
 CSEG initSnakeY   00000050
 CSEG spawnFood    0000008b
-CSEG resetMatrix  000001bc
-CSEG framebuffer  000000d7
+CSEG resetMatrix  000001b7
+CSEG framebuffer  000000d2
 CSEG framebuffer_column_loop 0000006e
 CSEG framebuffer_row_loop 0000007b
-CSEG getJoyY      000001e5
-CSEG AD           000001f4
-CSEG getJoyX      000001d6
+CSEG getJoyY      000001e0
+CSEG AD           000001ef
+CSEG getJoyX      000001d1
 CSEG offsetFoodX  00000099
 CSEG spawnFoodLoopY 000000a4
 CSEG spawnFoodCheck 000000ac
@@ -730,33 +730,31 @@ CSEG spawnFoodLoopX 000000b1
 CSEG spawnFoodCompareX 000000b7
 CSEG goToInit     000000bb
 CSEG checkBody    000000bd
-CSEG checkBodyLoopY 000000c1
-CSEG checkBodyX   000000c9
-CSEG checkBodyLoopX 000000cd
-CSEG checkBodyXPos 000000d2
-CSEG framebuffer_loop 000000da
-CSEG gamelogic    0000010a
-CSEG draw         000000ea
-CSEG drawFoodY    000001a8
-CSEG sendToFramebuffer 000000ed
-CSEG drawSnakeY   00000191
-CSEG checkFood    000000f3
-CSEG checkFoodX   000000fd
-CSEG makeLonger   00000107
-CSEG tailGotoBack 00000184
-CSEG tailLoop     0000017c
-CSEG goRight      00000149
-CSEG goLeft       0000013a
-CSEG goUp         00000158
-CSEG goDown       0000016a
-CSEG drawShortcut 00000138
-CSEG resetLeft    00000145
-CSEG resetRight   00000154
-CSEG resetUp      00000163
-CSEG resetDown    00000175
-CSEG step         0000018a
-CSEG drawSnakeMoveY 00000198
-CSEG drawSnakeX   0000019f
-CSEG drawFoodMoveY 000001ad
-CSEG drawFoodX    000001b5
-CSEG ADLoop       000001fe
+CSEG checkBodyLoopY 000000c4
+CSEG checkBodyX   000000cd
+CSEG framebuffer_loop 000000d5
+CSEG gamelogic    00000105
+CSEG draw         000000e5
+CSEG drawFoodY    000001a3
+CSEG sendToFramebuffer 000000e8
+CSEG drawSnakeY   0000018c
+CSEG checkFood    000000ee
+CSEG checkFoodX   000000f8
+CSEG makeLonger   00000102
+CSEG tailGotoBack 0000017f
+CSEG tailLoop     00000177
+CSEG goRight      00000144
+CSEG goLeft       00000135
+CSEG goUp         00000153
+CSEG goDown       00000165
+CSEG drawShortcut 00000133
+CSEG resetLeft    00000140
+CSEG resetRight   0000014f
+CSEG resetUp      0000015e
+CSEG resetDown    00000170
+CSEG step         00000185
+CSEG drawSnakeMoveY 00000193
+CSEG drawSnakeX   0000019a
+CSEG drawFoodMoveY 000001a8
+CSEG drawFoodX    000001b0
+CSEG ADLoop       000001f9
