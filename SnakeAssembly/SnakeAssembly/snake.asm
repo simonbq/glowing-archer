@@ -222,14 +222,7 @@ spawnFood:
 		ld rTemp2, Z
 		cp rTemp3, rTemp2
 		breq spawnFood
-
-		adiw Y, 1
-		adiw Z, 1
-		cp rowNumber, snakeLength
-		subi rowNumber, -1
-		brne checkFoodLoopY
-
-		ret
+		jmp checkBodyLoopY
 //Genväg till init
 goToInit:
 	jmp init
@@ -248,12 +241,11 @@ checkBody:
 	checkBodyLoopY:
 		adiw Y, 1
 		adiw Z, 1
-		subi rowNumber, -1
 		ld rTemp2, Y
 		cp rTemp, rTemp2
 		breq checkBodyX
 		cp rowNumber, snakeLength
-		
+		subi rowNumber, -1
 		brne checkBodyLoopY
 		ret
 
@@ -357,12 +349,9 @@ gamelogic:
 	ldi moreDelay, 0
 
 	//Utför kollisionsdetektering
-	rcall checkFood
-	nop
 	rcall checkBody
-	nop
+	rcall checkFood
 	
-
 	//Uppdatera svansen
 	ldi rTemp, 1
 	ldi ZH, HIGH(snakeX)
