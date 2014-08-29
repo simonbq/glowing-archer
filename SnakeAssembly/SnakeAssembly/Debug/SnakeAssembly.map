@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.1.52  C:\Users\Simon\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm Fri Aug 29 01:21:28 2014
+AVRASM ver. 2.1.52  C:\Users\Simon\Documents\GitHub\glowing-archer\SnakeAssembly\SnakeAssembly\SnakeAssembly.asm Fri Aug 29 02:24:51 2014
 
 
 EQU  SIGNATURE_000 0000001e
@@ -715,8 +715,8 @@ DSEG snakeY       00000124
 CSEG init         00000034
 CSEG initSnakeX   00000045
 CSEG initSnakeY   00000050
-CSEG spawnFood    0000008b
 CSEG resetMatrix  000001b3
+CSEG spawnFood    0000008b
 CSEG framebuffer  000000ce
 CSEG framebuffer_column_loop 0000006e
 CSEG framebuffer_row_loop 0000007b

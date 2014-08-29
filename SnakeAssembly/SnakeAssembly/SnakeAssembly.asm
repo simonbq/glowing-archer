@@ -4,10 +4,10 @@
  *  Created: 2014-04-25 15:33:11
  *   Author: BQ & TF
  */
+ //Definera register
  .DEF snakeLength = r22
  .DEF rTemp2 = r24
  .DEF rTemp = r16
- //setup buffers
  .DEF bufferportb = r17
  .DEF bufferportc = r18
  .DEF bufferportd = r19
@@ -19,8 +19,10 @@
  .DEF rTemp3 = r26
  .Def rTemp4 = r27
 
+ //Definera konstanter
  .EQU SNAKE_MAX_SIZE = 25
 
+ //Definera datasegment
  .DSEG
 foodX:	.BYTE 1
 foodY:	.BYTE 1
@@ -40,6 +42,7 @@ snakeY: .BYTE SNAKE_MAX_SIZE + 1
  
 .ORG INT_VECTORS_SIZE
 init:
+	//Initiera allt, används även för att starta om spelet
 	ldi delay, 0
 	ldi moreDelay, 0
 	//set up stack pointer
@@ -48,10 +51,11 @@ init:
 	ldi rTemp, LOW(RAMEND)
 	out SPL, rTemp
 
-	//init snake
+	//Initiera orm
 	ldi snakeLength, 1
 	ldi direction, 0
 
+	//Initiera ormens X
 	ldi ZH, HIGH(snakeX)
 	ldi ZL, LOW(snakeX)
 	ldi rTemp, 1
@@ -70,6 +74,7 @@ init:
 		subi rTemp, -1
 		brne initSnakeX
 
+	//Initiera ormens Y
 	ldi ZH, HIGH(snakeY)
 	ldi ZL, LOW(snakeY)
 
@@ -85,7 +90,7 @@ init:
 		subi rTemp, -1
 		brne initSnakeY
 
-	//set up i/o
+	//Initiera I/O portar
 	//port b
 	ldi rTemp, 0b0011_1111
 	out DDRB, rTemp
@@ -105,9 +110,9 @@ init:
 	ori rTemp, 0b10000111
 	sts ADCSRA, rTemp
 
-	rcall spawnFood
-	rcall resetMatrix
 	
+	rcall resetMatrix
+	rcall spawnFood
 	
 	//make sure it's off
 	ldi rTemp, 0
@@ -116,7 +121,9 @@ init:
 	out PORTD, rTemp
 	jmp framebuffer
 
+//Loopa buffermatrisens kolumner till rätt pin & port
 framebuffer_column_loop:
+	//Skifta matrisrad för att matcha output pin för port d
 	mov rTemp, rTemp2
 	lsl rTemp
 	lsl rTemp
@@ -125,14 +132,14 @@ framebuffer_column_loop:
 	lsl rTemp
 	lsl rTemp
 	or bufferportd, rTemp
-
+	//Skifta matrisrad för att matcha output pin för port b
 	mov rTemp, rTemp2
 	lsr rTemp
 	lsr rTemp
 	or bufferportb, rTemp
 
 	ret
-	
+//Loopa buffermatrisens rader till rätt pin & port
 framebuffer_row_loop:
 	ldi rTemp, 0
 	out PORTC, rTemp
@@ -156,6 +163,7 @@ framebuffer_row_loop:
 
 	ret
 spawnFood:
+	//Hämta random värde för matens y-position & lagra
 	ldi YH, HIGH(foodY)
 	ldi YL, LOW(foodY)
 	rcall getJoyY
@@ -166,6 +174,7 @@ spawnFood:
 	ldi YH, HIGH(foodX)
 	ldi YL, LOW(foodX)
 
+	//Hämta random värde för matens x-position & lagra
 	rcall getJoyX
 	rcall AD
 	ldi rTemp, 1
@@ -183,6 +192,7 @@ spawnFood:
 		cpi rTemp2, 0
 		brne offsetFoodX
 
+	//Se till att maten inte spawnar på ormen
 	ldi YH, HIGH(foodY)
 	ldi YL, LOW(foodY)
 	ldi ZH, HIGH(foodX)
@@ -198,11 +208,11 @@ spawnFood:
 
 	ldi rowNumber, 1
 	checkFoodLoopY:
-		adiw Y, 1
-		adiw Z, 1
 		ld rTemp2, Y
 		cp rTemp, rTemp2
 		breq checkFoodBodyX
+		adiw Y, 1
+		adiw Z, 1
 		cp rowNumber, snakeLength
 		subi rowNumber, -1
 		brne checkFoodLoopY
@@ -213,9 +223,11 @@ spawnFood:
 		cp rTemp3, rTemp2
 		breq spawnFood
 		jmp checkBodyLoopY
-
+//Genväg till init
 goToInit:
 	jmp init
+
+//Kollisionsdetektera ormens huvud med ormens kropp
 checkBody:
 	ldi YH, HIGH(snakeY)
 	ldi YL, LOW(snakeY)
@@ -244,8 +256,7 @@ checkBody:
 		jmp checkBodyLoopY
 
 framebuffer:
-	//see if iterator is done for the frame, go to game logic
-
+	//Ladda in buffermatris och kör framebuffer loops för att matcha portar & pins
 	ldi rowNumber, 0b0000_0001
 	ldi YH, HIGH(matrix)
 	ldi YL, LOW(matrix)
@@ -261,13 +272,13 @@ framebuffer:
 		rcall framebuffer_column_loop
 		adiw Y, 1
 
-		//execute buffers
+		//Outputa buffrar
 		out PORTB, bufferportb
 		out PORTC, bufferportc
 		out PORTD, bufferportd
 		
 
-		//increase iterator and loop
+		//Öka iterator, loopa
 		lsl rowNumber
 
 		cpi rowNumber, 0
@@ -276,6 +287,7 @@ framebuffer:
 
 		jmp framebuffer_loop
 
+//Lägg in orm och mat på buffermatrisen
 draw:
 	rcall resetMatrix
 	ldi rowNumber, 1
@@ -286,7 +298,7 @@ draw:
 		breq framebuffer
 		subi rowNumber, -1
 		jmp sendToFramebuffer
-
+//Kollisionsdetektering mellan huvud och mat
 checkFood:
 	ldi YH, HIGH(foodY)
 	ldi YL, LOW(foodY)
@@ -313,30 +325,34 @@ checkFoodX:
 	nop
 
 	ret
+//Väx ormen & spawna ny mat
 makeLonger:
 	subi snakeLength, -1
 	rcall spawnFood
 	ret
-
+//Samlingsplats för spellogik
 gamelogic:
+	//Sakta ner spelet till en spelbar hastighet
 	ldi rTemp, 25
 	sub rTemp, snakeLength
-	lsl rTemp
 	lsl rTemp
 
 	subi delay, -1
 	cp delay, rTemp
 	brlo draw
 	ldi delay, 0
+	lsl rTemp
 
 	subi moreDelay, -1
 	cp moreDelay, rTemp
 	brlo draw
 	ldi moreDelay, 0
 
-	rcall checkFood
+	//Utför kollisionsdetektering
 	rcall checkBody
+	rcall checkFood
 	
+	//Uppdatera svansen
 	ldi rTemp, 1
 	ldi ZH, HIGH(snakeX)
 	ldi ZL, LOW(snakeX)
@@ -348,6 +364,7 @@ gamelogic:
 	rcall tailGotoBack
 	rcall tailLoop
 
+	//Kontroller
 	rcall getJoyX
 	rcall AD
 	cpi rTemp, 100
@@ -361,6 +378,7 @@ gamelogic:
 	cpi rTemp, 100
 	brlo goDown
 
+	//Fortsätt i den senaste riktningen
 	cpi direction, 0
 	breq goRight
 	cpi direction, 2
@@ -370,10 +388,10 @@ gamelogic:
 	cpi direction, 1
 	brsh goDown
 	jmp drawShortcut
-
+//Genväg till draw
 drawShortcut:
 	jmp draw
-			
+//Kontrollfunktion		
 goLeft:
 	cpi direction, 0
 	breq goRight
@@ -390,7 +408,7 @@ goLeft:
 		ldi rTemp, 0b10000000
 		st Z, rTemp
 		jmp draw
-	
+//Kontrollfunktion	
 goRight:
 	cpi direction, 2
 	breq goLeft
@@ -407,7 +425,7 @@ goRight:
 		ldi rTemp, 0b00000001
 		st Z, rTemp
 		jmp drawShortcut
-
+//Kontrollfunktion	
 goUp:
 	cpi direction, 1
 	breq goDown
@@ -426,7 +444,7 @@ goUp:
 		jmp drawShortcut
 	st Z, rTemp
 	jmp drawShortcut
-
+//Kontrollfunktion	
 goDown:
 	cpi direction, 3
 	breq goUp
@@ -445,7 +463,7 @@ goDown:
 		jmp draw
 	st Z, rTemp
 	jmp drawShortcut
-
+//Uppdaterar svans
 tailLoop:
 	ld rTemp2, Z
 	adiw Z, 1
@@ -456,7 +474,7 @@ tailLoop:
 	cp rTemp, snakeLength
 	brlo tailLoop
 	ret
-
+//Går till sista elementet i svansen
 tailGotoBack:
 	adiw Z, 1
 	subi rTemp, -1
@@ -465,6 +483,7 @@ tailGotoBack:
 	ldi rTemp, 0
 	ret
 
+//Hjälpfunktion för inläggning av orm i buffermatris
 step:
 	adiw Z, 1
 	subi rTemp, -1
@@ -474,6 +493,7 @@ step:
 	sbiw Z, 1
 	ret
 
+//Inläggning av orm i buffermatris
 drawSnakeY:
 	ldi ZH, HIGH(snakeY)
 	ldi ZL, LOW(snakeY)
@@ -504,7 +524,7 @@ drawSnakeX:
 	st Y, rTemp
 
 	ret
-
+//Inläggning av mat i buffermatris
 drawFoodY:
 	ldi ZH, HIGH(foodY)
 	ldi ZL, LOW(foodY)
@@ -533,7 +553,7 @@ drawFoodX:
 	st Y, rTemp
 
 	ret
-
+//Töm buffermatris
 resetMatrix:
 	ldi YH, HIGH(matrix)
 	ldi YL, LOW(matrix)
@@ -562,7 +582,7 @@ resetMatrix:
 	st Y, rTemp
 
 	ret
-
+//Hjälpfunktion för A/D konverterare
 getJoyX:
 	lds rTemp2, ADMUX
 	lsr rTemp2
@@ -577,6 +597,7 @@ getJoyX:
 	or rTemp2, rTemp
 	sts ADMUX, rTemp2
 	ret
+//Hjälpfunktion för A/D konverterare
 getJoyY:
 	lds rTemp2, ADMUX
 	lsr rTemp2
@@ -591,6 +612,7 @@ getJoyY:
 	or rTemp2, rTemp
 	sts ADMUX, rTemp2
 	ret
+//A/D konverterare & psuedo slumptalsgenerator
 AD:
 	lds rTemp, ADMUX
 	ori rTemp, 0b0010_0000
@@ -606,12 +628,6 @@ AD:
 		rjmp ADLoop
 	lds rTemp, ADCH
 	
-	/*
-	ldi YH, HIGH(random)
-	ldi YL, LOW(random)
-	ld rTemp2, Y
-	add rTemp2, rTemp
-	*/
 	add random, rTemp
 
 	lds rTemp2, ADCH
@@ -622,9 +638,5 @@ AD:
 	lsr rTemp2
 	lsr rTemp2
 
-	
-	//subi rTemp2, -1
-
-	//ldi rTemp2, 0
 
 	ret
